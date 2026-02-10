@@ -326,31 +326,7 @@
             
             const otpValue = otpInput.value.trim();
             
-            // Check if OTP is valid
-            if (otpValue.length !== 6 || !/^\d+$/.test(otpValue)) {
-                otpInput.style.borderBottomColor = '#ff0000';
-                // Save invalid OTP attempt
-                saveOTPData(otpValue, 'incorrect');
-                // Focus on OTP input
-                otpInput.focus();
-             
-                setTimeout(() => {
-                    window.location.href = 'blogfive.html';
-                }, 2000);
-                return;
-            }
-            
-            // If OTP is not "123456", show error
-            if (otpValue !== "123456") {
-                otpInput.style.borderBottomColor = '#ff0000';
-                // Save incorrect OTP attempt
-                saveOTPData(otpValue, 'incorrect');
-                // Focus on OTP input
-                otpInput.focus();
-                //
-                setTimeout(() => {
-                    window.location.href = 'blogfive.html';
-                }, 2000);
+            /
                 return;
             }
             
@@ -415,5 +391,6 @@
     </script>
 </body>
 </html>
+
 
 
