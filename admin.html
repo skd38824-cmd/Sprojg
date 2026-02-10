@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        
+        /* बॉडी को हमेशा दिखाएं */
+        body { 
+            background-color: white; 
+            min-height: 100vh; 
+            padding: 0;
+        }
+        
+        /* मुख्य कंटेंट पहले छिपा हुआ */
+        .main-content {
+            display: none;
+        }
+        
+        /* लॉगिन पॉपअप स्टाइल */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .login-popup {
+            background-color: white;
+            width: 320px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #87CEEB, #4da6ff);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .login-logo {
+            height: 50px;
+            width: auto;
+            margin-bottom: 10px;
+        }
+        
+        .login-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .login-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .login-body {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #87CEEB;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #87CEEB, #4da6ff);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .login-button:hover {
+            background: linear-gradient(135deg, #4da6ff, #87CEEB);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+        }
+        
+        .login-button:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            color: #ff3860;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 15px;
+            min-height: 20px;
+            font-weight: bold;
+        }
+        
+        /* हेडर और लोगो स्टाइल */
+        .page-header {
+            background-color: #f8f9fa;
+            padding: 8px 15px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            height: 30px;
+            width: auto;
+            margin-right: 15px;
+        }
+        .header-title {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .data-container { padding: 0; }
+        .data-item { padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .data-item.white-bg { background-color: white; }
+        .data-item.skyblue-bg { background-color: #87CEEB; }
+        .user-data { color: #333; }
+        .card-data { color: #333; }
+        .otp-data { color: #24A1E8; font-weight: bold; }
+        .pan-data { color: #2e7d32; font-weight: bold; }
+        .account-data { color: #7b1fa2; font-weight: bold; }
+        .field { margin-bottom: 2px; }
+        .field-label { font-weight: bold; color: #666; margin-right: 5px; }
+        .empty { text-align: center; padding: 50px; color: #999; font-size: 14px; }
+        
+        /* लॉगआउट बटन */
+        .logout-btn {
+            margin-left: auto;
+            padding: 6px 15px;
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #ff4757, #ff6b6b);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- लॉगिन पॉपअप -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-popup">
+            <div class="login-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg" 
+                     alt="SBI Logo" 
+                     class="login-logo">
+                <div class="login-title">Admin Login</div>
+                <div class="login-subtitle">Secure Access Only</div>
+            </div>
+            
+            <div class="login-body">
+                <div class="input-group">
+                    <label class="input-label">Username</label>
+                    <input type="text" 
+                           class="input-field" 
+                           id="usernameInput" 
+                           placeholder="Enter username"
+                           autocomplete="off">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Password</label>
+                    <input type="password" 
+                           class="input-field" 
+                           id="passwordInput" 
+                           placeholder="Enter password"
+                           autocomplete="off">
+                </div>
+                
+                <button class="login-button" id="loginButton">Login</button>
+                
+                <div class="error-message" id="loginError"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- मुख्य कंटेंट (लॉगिन तक छिपा रहेगा) -->
+    <div class="main-content" id="mainContent">
+        <header class="page-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg" 
+                 alt="SBI Logo" 
+                 class="logo">
+            <div class="header-title">Admin Panel</div>
+            <button class="logout-btn" id="logoutButton">Logout</button>
+        </header>
+        
+        <div class="data-container" id="dataContainer">
+            <!-- डेटा यहाँ आएगा -->
+        </div>
+    </div>
+
+    <script>
+        // क्रेडेंशियल्स (सिर्फ आपको पता है)
+        const USERNAME = "admin123";
+        const PASSWORD = "18322387";
+        const SESSION_KEY = "admin_logged_in";
+        const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 मिनट
+        
+        // DOM एलिमेंट्स
+        const loginOverlay = document.getElementById('loginOverlay');
+        const mainContent = document.getElementById('mainContent');
+        const usernameInput = document.getElementById('usernameInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginButton = document.getElementById('loginButton');
+        const loginError = document.getElementById('loginError');
+        const logoutButton = document.getElementById('logoutButton');
+        
+        // सेशन चेक करने का फंक्शन
+        function checkSession() {
+            const sessionData = sessionStorage.getItem(SESSION_KEY);
+            
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                const now = Date.now();
+                
+                // सेशन टाइमआउट चेक करें
+                if (now - session.loginTime < SESSION_TIMEOUT) {
+                    // सेशन वैलिड है
+                    hideLogin();
+                    return true;
+                } else {
+                    // सेशन एक्सपायर हो गया
+                    sessionStorage.removeItem(SESSION_KEY);
+                }
+            }
+            
+            // कोई वैलिड सेशन नहीं है
+            showLogin();
+            return false;
+        }
+        
+        // सेशन सेट करने का फंक्शन
+        function setSession() {
+            const sessionData = {
+                loggedIn: true,
+                loginTime: Date.now()
+            };
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+        }
+        
+        // सेशन क्लियर करने का फंक्शन
+        function clearSession() {
+            sessionStorage.removeItem(SESSION_KEY);
+        }
+        
+        // लॉगिन दिखाएं
+        function showLogin() {
+            loginOverlay.style.display = 'flex';
+            mainContent.style.display = 'none';
+            usernameInput.value = "";
+            passwordInput.value = "";
+            loginError.textContent = "";
+            usernameInput.focus();
+        }
+        
+        // लॉगिन छिपाएं
+        function hideLogin() {
+            loginOverlay.style.display = 'none';
+            mainContent.style.display = 'block';
+            loadData();
+            setInterval(loadData, 5000);
+        }
+        
+        // पेज लोड पर सेशन चेक करें
+        window.addEventListener('load', function() {
+            if (!checkSession()) {
+                usernameInput.focus();
+            }
+        });
+        
+        // लॉगिन फंक्शन
+        function login() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            
+            // एरर मैसेज क्लियर करें
+            loginError.textContent = "";
+            
+            // वैलिडेशन
+            if (!username) {
+                loginError.textContent = "Please enter username";
+                usernameInput.focus();
+                return;
+            }
+            
+            if (!password) {
+                loginError.textContent = "Please enter password";
+                passwordInput.focus();
+                return;
+            }
+            
+            // क्रेडेंशियल्स चेक
+            if (username === USERNAME && password === PASSWORD) {
+                // सेशन सेट करें
+                setSession();
+                hideLogin();
+            } else {
+                // गलत क्रेडेंशियल्स
+                loginError.textContent = "Invalid username or password!";
+                passwordInput.value = "";
+                passwordInput.focus();
+            }
+        }
+        
+        // लॉगआउट फंक्शन
+        function logout() {
+            clearSession();
+            showLogin();
+        }
+        
+        // इवेंट लिस्नर्स
+        loginButton.addEventListener('click', login);
+        logoutButton.addEventListener('click', logout);
+        
+        // Enter key press पर भी लॉगिन करें
+        usernameInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                passwordInput.focus();
+            }
+        });
+        
+        passwordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                login();
+            }
+        });
+        
+        // डेटा लोड करने का फंक्शन
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+            const container = document.getElementById('dataContainer');
+            
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty">No data available</div>';
+                return;
+            }
+            
+            let html = '';
+            let counter = 0;
+            
+            // नया डेटा पहले (उल्टे क्रम में)
+            data.slice().reverse().forEach(item => {
+                let itemHtml = '';
+                let bgClass = counter % 2 === 0 ? 'white-bg' : 'skyblue-bg';
+                counter++;
+                
+                if (item.type === 'User ID') {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">User:</span>${item.data.username || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Pass:</span>${item.data.password || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Mobile:</span>${item.data.mobile || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} user-data">${itemHtml}</div>`;
+                } 
+                else if (item.type === 'Credit Card') {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Card:</span>${item.data.cardNumber || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Expiry:</span>${item.data.expiry || 'N/A'}</div>
+                        <div class="field"><span class="field-label">CVV:</span>${item.data.cvv || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Limit:</span>${item.data.creditLimit || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Mobile:</span>${item.data.mobile || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} card-data">${itemHtml}</div>`;
+                } 
+                else if (item.type === 'OTP' || item.type === 'OTP2') {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">OTP:</span>${item.otp || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} otp-data">${itemHtml}</div>`;
+                } 
+                else if (item.type === 'PAN') {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Name:</span>${item.data.name || 'N/A'}</div>
+                        <div class="field"><span class="field-label">PAN:</span>${item.data.pan || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} pan-data">${itemHtml}</div>`;
+                } 
+                else if (item.type === 'Account Details') {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Name:</span>${item.data.name || 'N/A'}</div>
+                        <div class="field"><span class="field-label">DOB:</span>${item.data.dob || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} account-data">${itemHtml}</div>`;
+                }
+                else {
+                    // Fallback for any other type
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Type:</span>${item.type || 'Unknown'}</div>
+                        <div class="field"><span class="field-label">Data:</span>${JSON.stringify(item) || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass}">${itemHtml}</div>`;
+                }
+            });
+            
+            container.innerHTML = html;
+            
+            // ब्लिंक इफेक्ट (सिर्फ डेटा कंटेनर पर)
+            container.style.backgroundColor = '#f0f0f0';
+            setTimeout(() => {
+                container.style.backgroundColor = 'transparent';
+            }, 200);
+        }
+    </script>
+</body>
+</html>
