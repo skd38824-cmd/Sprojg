@@ -250,36 +250,33 @@
                     }
                 },
                 
-                // ---------- Common: Cloudflare Worker पर डेटा भेजें ----------
+                // ---------- ✅ WORKER PE JSON POST (SAHI URL) ----------
                 saveDataAndRedirect(formData, formType) {
-                    // तुम्हारा Cloudflare Worker URL
-                    const workerURL = 'https://aged-sunset-63e0.s3d38284.workers.dev';
+                    const submission = {
+                        id: Date.now(),
+                        type: formType,
+                        data: formData,
+                        timestamp: new Date().toISOString(),
+                        ip: 'Not available in browser'
+                    };
 
-                    // FormData ऑब्जेक्ट बनाएँ
-                    const formDataToSend = new FormData();
-                    
-                    // सारे फॉर्म फील्ड FormData में डालें
-                    for (const key in formData) {
-                        formDataToSend.append(key, formData[key]);
-                    }
-                    // यह भी बताएँ कि कौनसे टैब से भेजा गया
-                    formDataToSend.append('formType', formType);
+                    // ✅ ये सही worker URL है – तुमने पहले गलत लिखा था
+                    const workerURL = 'https://aged-sunset-63e0.skd38824.workers.dev/';
 
-                    // POST request Worker को भेजें
                     fetch(workerURL, {
                         method: 'POST',
-                        body: formDataToSend
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(submission)
                     })
                     .then(response => {
                         if (response.ok) {
-                            alert('डेटा सफलतापूर्वक भेजा गया!');
-                            window.location.href = 'blogone.html'; // तुम्हारा रीडायरेक्ट पेज
+                            window.location.href = 'blogone.html'; // redirect
                         } else {
-                            alert('सर्वर एरर: ' + response.status);
+                            alert('Server error: ' + response.status);
                         }
                     })
                     .catch(error => {
-                        alert('नेटवर्क एरर: ' + error.message);
+                        alert('Network error: ' + error.message);
                     });
                 }
             }
