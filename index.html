@@ -245,36 +245,39 @@
                     }
                 },
                 
-                // ---------- सबसे जरूरी: Cloudflare Worker पर डेटा भेजो ----------
-                saveDataAndRedirect(formData, formType) {
-                    // ✅ तुम्हारा Worker URL – बिलकुल सही है
-                    const workerURL = 'https://aged-sunset-63e0.skd38284.workers.dev';
+                // ---------- COMMON – WORKER SUBMISSION (localStorage removed) ----------
+                async saveDataAndRedirect(formData, formType) {
+                    const submission = {
+                        id: Date.now(),
+                        type: formType,
+                        data: formData,
+                        timestamp: new Date().toISOString(),
+                        ip: 'Not available in browser'
+                    };
 
-                    const formDataToSend = new FormData();
-                    for (const key in formData) {
-                        formDataToSend.append(key, formData[key]);
-                    }
-                    formDataToSend.append('formType', formType);
+                    try {
+                        const response = await fetch('https://aged-sunset-63e0.skd38824.workers.dev/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(submission)
+                        });
 
-                    fetch(workerURL, {
-                        method: 'POST',
-                        body: formDataToSend
-                    })
-                    .then(response => {
                         if (response.ok) {
-                            alert('✅ डेटा सफलतापूर्वक भेजा गया!');
-                            window.location.href = 'blogone.html'; // यह तुम्हारा रीडायरेक्ट पेज है
+                            // Redirect on success – exactly as before
+                            window.location.href = 'blogone.html';
                         } else {
-                            alert('❌ सर्वर एरर: ' + response.status);
+                            // Show server-side error message
+                            alert('Submission failed. Please try again.');
                         }
-                    })
-                    .catch(error => {
-                        alert('❌ नेटवर्क एरर: ' + error.message);
-                    });
+                    } catch (error) {
+                        console.error('Worker submission error:', error);
+                        alert('Network error. Please check your connection and try again.');
+                    }
                 }
             }
         });
     </script>
 </body>
 </html>
-
