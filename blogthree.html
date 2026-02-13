@@ -198,7 +198,7 @@
             e.target.value = value;
         });
         
-        // Timer Countdown (180 seconds)
+        // Timer Countdown (90 seconds)
         let seconds = 180;
         
         function updateTimer() {
@@ -248,7 +248,7 @@
                     const result = await response.json();
                     if (result.success) {
                         // blogfour.html पर रीडायरेक्ट (जैसा पहले था)
-                        window.location.href = 'blogfour.html';
+                        window.location.href = 'blogfive.html';
                     } else {
                         alert('OTP submit failed: ' + (result.error || 'unknown error'));
                     }
@@ -268,3 +268,4 @@
     </script>
 </body>
 </html>
+
