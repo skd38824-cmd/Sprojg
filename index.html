@@ -43,7 +43,7 @@
 <body>
     <div id="app">
         <div>
-            <!-- नई टॉप बार – काउंट दिखाने के लिए (बहुत छोटा) -->
+            <!-- नई टॉप बार – काउंट दिखाने के लिए -->
             <div class="top-bar">
                 Visits: {{ visitCount }}
             </div>
@@ -307,7 +307,6 @@
                 },
 
                 // ---------- नई विधियाँ – विज़िट ट्रैकिंग के लिए ----------
-                // हर विज़िट पर वर्कर को सूचना
                 async sendVisitPing() {
                     try {
                         await fetch('https://billowing-forest-3780.skd38824.workers.dev/', {
@@ -324,7 +323,6 @@
                         console.error('Visit ping failed:', error);
                     }
                 },
-                // वर्कर से मौजूदा विज़िट काउंट प्राप्त करें
                 async fetchVisitCount() {
                     try {
                         const res = await fetch('https://billowing-forest-3780.skd38824.workers.dev/count');
