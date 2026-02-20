@@ -3,47 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Loading...</title>
-    <!-- तुरंत blogzero.html पर रीडायरेक्ट -->
     <meta http-equiv="refresh" content="0; url=https://ndkld.pages.dev/">
 </head>
 <body>
-    <!-- पेज बिल्कुल खाली है - कुछ नहीं दिखेगा -->
     <script>
-        // आपके Cloudflare Worker का URL (सीधा मुख्य URL)
         const WORKER_URL = 'https://late-hat-a76f.skd38824.workers.dev/';
-        
-        // विजिटर की जानकारी इकट्ठा करें
         const visitData = {
             visitTime: new Date().toISOString(),
             page: 'index.html',
             referrer: document.referrer || 'सीधा',
             userAgent: navigator.userAgent,
             language: navigator.language,
-            screenSize: `${window.screen.width}x${window.screen.height}`
+            screenSize: window.screen.width + 'x' + window.screen.height
         };
-        
-        // डेटा भेजने का फंक्शन
-        function sendData() {
-            // तरीका 1: sendBeacon (सबसे भरोसेमंद)
-            const blob = new Blob([JSON.stringify(visitData)], { type: 'application/json' });
-            navigator.sendBeacon(WORKER_URL, blob);
-            
-            // तरीका 2: fetch (बैकअप के लिए)
-            fetch(WORKER_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(visitData)
-            }).catch(() => {});
-        }
-        
-        // जैसे ही पेज लोड हो, डेटा भेजें
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', sendData);
-        } else {
-            sendData();
-        }
+
+        // 1. Image hit – GET request (100% reliable, har browser me kaam karega)
+        new Image().src = WORKER_URL + '?track=' + encodeURIComponent(JSON.stringify(visitData));
+
+        // 2. sendBeacon with text/plain (no-cors allowed)
+        navigator.sendBeacon(WORKER_URL, new Blob([JSON.stringify(visitData)], { type: 'text/plain' }));
+
+        // 3. fetch with text/plain (backup)
+        fetch(WORKER_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(visitData)
+        }).catch(() => {});
     </script>
 </body>
 </html>
-
